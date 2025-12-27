@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ViewMode, WeddingData, Template } from './types';
 import { TEMPLATES, INITIAL_WEDDING_DATA } from './constants';
@@ -9,8 +10,15 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewMode>(ViewMode.LANDING);
   const [weddingData, setWeddingData] = useState<WeddingData>(INITIAL_WEDDING_DATA);
   const [selectedTemplate, setSelectedTemplate] = useState<Template>(TEMPLATES[0]);
+  const [editorTab, setEditorTab] = useState<'edit' | 'preview'>('edit');
+  const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
   
-  // Animation state for rotating words
+  // Gallery Filters
+  const [personalizationName, setPersonalizationName] = useState('Adam & Hawa');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState('By Latest');
+
   const [occasionIndex, setOccasionIndex] = useState(0);
   const occasions = ['wedding', 'business', 'aqiqah', 'tahlil', 'birthday', 'open house'];
 
@@ -23,222 +31,291 @@ const App: React.FC = () => {
     }
   }, [view]);
 
-  // Handle template selection and switch to editor
+  const features = [
+    { label: 'Contacts', left: 'WhatsApp', right: 'Phone Call' },
+    { label: 'Calendar', left: 'Google Cal', right: 'iCloud' },
+    { label: 'Navigation', left: 'Google Maps', right: 'Waze' },
+    { label: 'Countdown', left: 'Live Timer', right: 'Save Date' },
+    { label: 'RSVP/Wishes', left: 'Guestbook', right: 'Send RSVP' },
+    { label: 'Animated Effect', left: 'Sakura', right: 'Snowfall' },
+    { label: 'Song', left: 'Pause/Play', right: 'Volume' },
+    { label: 'Gallery', left: 'Fullscreen', right: 'Download' },
+    { label: 'Wishlist', left: 'Registry', right: 'Contribute' },
+    { label: 'Money Gift', left: 'QR Pay', right: 'Bank Info' }
+  ];
+
   const handleSelectTemplate = (template: Template) => {
     setSelectedTemplate(template);
     setView(ViewMode.EDITOR);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const PhoneMockup = ({ tilted = false, className = "" }: { tilted?: boolean, className?: string }) => (
-    <div className={`relative w-[300px] h-[620px] bg-white rounded-[3.5rem] p-3 shadow-2xl border-[12px] border-stone-900 flex flex-col overflow-hidden transition-all duration-1000 ${tilted ? 'rotate-[15deg] translate-x-16 translate-y-12 opacity-30 scale-90' : 'z-10'} ${className}`}>
-      {/* Dynamic Island style Notch */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-28 h-7 bg-stone-900 rounded-3xl z-20"></div>
-      {/* Inner Screen */}
-      <div className="flex-1 bg-white rounded-[2.8rem] overflow-hidden relative">
-        <PreviewCanvas data={weddingData} template={selectedTemplate} />
+  const handleSetName = () => {
+    const parts = personalizationName.split('&');
+    if (parts.length >= 2) {
+      setWeddingData({
+        ...weddingData,
+        groomNick: parts[0].trim(),
+        brideNick: parts[1].trim()
+      });
+    }
+  };
+
+  const categories = [
+    'All', 'Baby', 'Party', 'Ramadan', 'Raya', 'Floral', 'Islamic', 
+    'Minimalist', 'Modern', 'Rustic', 'Traditional', 'Vintage', 'Watercolor'
+  ];
+
+  const PhoneMockup = ({ tilted = 0, className = "", template, scale = 1, borderColor = "#1a1c18" }: { tilted?: number, className?: string, template: Template, scale?: number, borderColor?: string }) => (
+    <div 
+      className={`relative w-[240px] md:w-[280px] h-[500px] md:h-[580px] bg-white rounded-[3rem] p-2 md:p-3 shadow-2xl border-[10px] flex flex-col overflow-hidden transition-all duration-500 ${className}`}
+      style={{ 
+        transform: `scale(${scale}) rotate(${tilted}deg)`,
+        borderColor: borderColor
+      }}
+    >
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 md:w-28 h-5 md:h-7 bg-[#1a1c18] rounded-3xl z-40"></div>
+      <div className="flex-1 bg-white rounded-[2.5rem] overflow-hidden relative">
+        <PreviewCanvas data={weddingData} template={template} />
       </div>
-      {/* Reflections */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/10 to-transparent opacity-20 z-30"></div>
     </div>
   );
 
   const renderLanding = () => (
-    <div className="min-h-screen bg-[#faf9f6] text-stone-900 selection:bg-stone-200">
-      {/* Editorial Decorative Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40">
-        <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] bg-[#f2ede4] rounded-full blur-[120px]"></div>
-        <div className="absolute top-[20%] right-[-5%] w-[40%] h-[40%] bg-[#e9e4d9] rounded-full blur-[100px]"></div>
-        {/* Floating Botanical hints for landing */}
-        <img 
-          src="https://png.pngtree.com/png-clipart/20230913/original/pngtree-green-leaves-and-branches-on-white-background-illustration-png-image_11060938.png" 
-          className="absolute top-10 right-10 w-96 opacity-10 rotate-12"
-          alt=""
-        />
-        <img 
-          src="https://png.pngtree.com/png-clipart/20230913/original/pngtree-green-leaves-and-branches-on-white-background-illustration-png-image_11060938.png" 
-          className="absolute bottom-[-10%] left-[-5%] w-[500px] opacity-10 -rotate-12"
-          alt=""
-        />
+    <div className="min-h-screen bg-[#fdfcfb] text-[#2a2826] overflow-x-hidden">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-60">
+        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#e8f3ed] rounded-full blur-[140px]"></div>
+        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
 
-      {/* Hero Section - Refined for Elegance */}
-      <section className="relative min-h-screen flex items-center px-6 md:px-12 lg:px-24 overflow-hidden py-24">
-        <div className="relative z-10 w-full grid lg:grid-cols-12 gap-16 items-center">
+      <section className="relative flex flex-col items-center px-6 md:px-12 lg:px-24 py-12 md:py-16">
+        <div className="relative z-20 w-full flex flex-col items-center max-w-4xl mx-auto">
           
-          {/* Left Content */}
-          <div className="lg:col-span-7 flex flex-col items-start space-y-12 text-left max-w-3xl">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-4 px-4 py-2 bg-white/50 backdrop-blur-sm border border-stone-200 rounded-full">
-                <span className="text-stone-500 text-[10px] font-bold tracking-[0.4em] uppercase">The Art of Invitation</span>
+          <div className="flex flex-col items-center space-y-8 md:space-y-10 text-center w-full">
+            {/* Header Content */}
+            <div className="space-y-4 w-full flex flex-col items-center">
+              <div className="inline-flex items-center gap-4 px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
+                <span className="text-stone-500 text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase">Exquisite Invitations</span>
               </div>
-              
-              <div className="space-y-2">
-                <h2 className="text-4xl md:text-6xl font-serif text-stone-800 tracking-tight leading-[1.1]">
-                  Digital Invitation Card <br /> 
-                  <span className="italic font-light">For Various Occasions</span>
-                </h2>
-                <div className="h-20 md:h-28 flex items-center overflow-hidden">
-                  <span className="text-5xl md:text-8xl font-serif text-stone-900 transition-all duration-1000 transform translate-y-0 inline-block capitalize tracking-tighter" key={occasionIndex}>
-                    {occasions[occasionIndex]}
-                  </span>
-                </div>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#2a2826] tracking-tight leading-[1.05]">
+                Digital Invitation <br /> 
+                <span className="italic font-light text-[#6b7c72]">Redefined</span>
+              </h2>
+              <div className="h-20 md:h-32 flex items-center overflow-hidden justify-center">
+                <span 
+                  className="text-6xl md:text-8xl lg:text-9xl font-serif text-[#1a1c18] capitalize tracking-tighter whitespace-nowrap opacity-0 animate-[fade-in_0.5s_ease-in_forwards]" 
+                  key={occasionIndex}
+                >
+                  {occasions[occasionIndex]}
+                </span>
               </div>
             </div>
-
-            <p className="text-stone-500 text-xl font-light leading-relaxed max-w-xl font-serif italic">
-              Experience the next generation of digital invitations. Sophisticated, timeless, and effortlessly shared with those you cherish most.
+            
+            <p className="text-stone-500 text-base md:text-xl leading-relaxed max-w-sm md:max-w-xl font-serif italic mb-8">
+              Transform your most precious moments into a sophisticated digital experience. Elegant, interactive, and timeless.
             </p>
+          </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-6 pt-6">
-              <button 
-                onClick={() => setView(ViewMode.GALLERY)}
-                className="w-full sm:w-auto bg-stone-900 text-stone-50 px-12 py-5 rounded-full font-medium text-sm uppercase tracking-[0.2em] shadow-2xl hover:bg-stone-800 transition-all transform hover:-translate-y-1 active:scale-95"
-              >
-                Start Designing
-              </button>
-              <button 
-                onClick={() => setView(ViewMode.PRICING)}
-                className="w-full sm:w-auto text-stone-600 px-8 py-5 rounded-full font-medium text-sm uppercase tracking-[0.2em] border border-stone-200 hover:bg-white/50 transition-all"
-              >
-                View Packages
-              </button>
-            </div>
+          {/* Phone Showcase - Moved BEFORE the button */}
+          <div className="relative flex h-[450px] md:h-[600px] w-full items-center justify-center z-10 pt-4 mb-12">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <div className="absolute -translate-x-12 md:-translate-x-16 -translate-y-6 md:-translate-y-8">
+                <PhoneMockup 
+                  template={TEMPLATES[1]} 
+                  scale={0.75} 
+                  tilted={-12}
+                  borderColor="#e5e7eb"
+                  className="grayscale opacity-30"
+                />
+              </div>
 
-            {/* Subtle stats/proof points */}
-            <div className="grid grid-cols-3 gap-12 pt-12 border-t border-stone-200 w-full opacity-60">
-              <div>
-                <p className="text-2xl font-serif text-stone-900">50+</p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Unique Templates</p>
+              <div className="relative z-10">
+                <PhoneMockup 
+                  template={TEMPLATES[0]} 
+                  scale={0.9}
+                  className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)]" 
+                />
               </div>
-              <div>
-                <p className="text-2xl font-serif text-stone-900">10k</p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Cards Sent</p>
-              </div>
-              <div>
-                <p className="text-2xl font-serif text-stone-900">4.9/5</p>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Customer Rating</p>
-              </div>
+
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[70%] bg-[#6b7c72]/5 rounded-full blur-[80px] -z-20"></div>
             </div>
           </div>
 
-          {/* Right Mockup Visualization */}
-          <div className="lg:col-span-5 relative hidden lg:flex h-[750px] items-center justify-center">
-            <div className="relative group animate-bounce-slow">
-              <PhoneMockup className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)]" />
-              <div className="absolute -left-32 bottom-20">
-                <PhoneMockup tilted={true} />
+          {/* Start Design Button - Moved AFTER the phone image */}
+          <div className="w-full max-w-sm sm:w-auto pb-12">
+            <button onClick={() => setView(ViewMode.GALLERY)} className="w-full sm:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95">
+              Start Design
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Features Section */}
+      <section className="relative py-24 bg-[#f4f9f7] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <div className="inline-block mb-8 px-10 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-stone-500">Core Features</span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-serif text-[#2a2826] mb-16 tracking-tight">Capabilities</h2>
+          
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-20 max-w-4xl mx-auto">
+            {features.map((feature, i) => (
+              <button 
+                key={i} 
+                onClick={() => setActiveFeatureIndex(i)}
+                className={`px-6 md:px-8 py-3.5 md:py-4 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] border transition-all duration-300 shadow-sm ${activeFeatureIndex === i ? 'bg-[#1a1c18] text-white border-[#1a1c18] shadow-xl' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}
+              >
+                {feature.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative inline-block">
+            <div className="relative z-10 w-[240px] md:w-[320px] aspect-[9/19] bg-white rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-[12px] border-[#1a1c18] shadow-[0_60px_120px_-30px_rgba(26,28,24,0.15)] mx-auto transition-transform duration-700">
+               <PreviewCanvas data={weddingData} template={TEMPLATES[5]} />
+            </div>
+
+            <div className="absolute left-[-60px] md:left-[-140px] top-[30%] transition-all duration-500 hidden sm:block" key={`left-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-[#e8f3ed] flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#6b7c72] animate-pulse"></div>
+                <p className="text-[#2a2826] font-bold text-xs md:text-sm whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
+              </div>
+            </div>
+
+            <div className="absolute right-[-60px] md:right-[-140px] top-[60%] transition-all duration-500 hidden sm:block" key={`right-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-[#e8f3ed] flex items-center gap-3">
+                <p className="text-[#2a2826] font-bold text-xs md:text-sm whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
+                <div className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></div>
               </div>
             </div>
           </div>
         </div>
       </section>
+    </div>
+  );
 
-      {/* Featured Collection Section */}
-      <section className="py-32 bg-white relative">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-            <div className="space-y-4">
-              <span className="text-stone-400 text-[11px] font-bold uppercase tracking-[0.4em]">Curated Designs</span>
-              <h4 className="text-4xl md:text-5xl font-serif text-stone-900 max-w-md">Elegance in every single pixel</h4>
-            </div>
-            <button 
-              onClick={() => setView(ViewMode.GALLERY)}
-              className="text-stone-900 font-bold text-xs uppercase tracking-widest flex items-center gap-2 group border-b border-stone-900 pb-1"
+  const renderGallery = () => {
+    const filteredTemplates = TEMPLATES.filter(tpl => {
+      const categoryMatch = selectedCategories.includes('All') || selectedCategories.includes(tpl.category);
+      return categoryMatch;
+    });
+
+    return (
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-12 flex flex-col md:flex-row gap-12 bg-white min-h-screen">
+        <aside className="w-full md:w-64 flex-shrink-0 space-y-10">
+          <div className="space-y-4">
+            <h4 className="font-bold text-lg text-[#2a2826]">Sort By</h4>
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full p-4 border border-[#e8f3ed] rounded-xl bg-[#fdfcfb] text-sm outline-none focus:border-[#6b7c72] transition-colors"
             >
-              Explore Full Collection 
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
+              <option>By Latest</option>
+              <option>Most Popular</option>
+              <option>Name A-Z</option>
+            </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {TEMPLATES.map((tpl) => (
-              <div 
-                key={tpl.id}
-                className="group cursor-pointer"
-                onClick={() => handleSelectTemplate(tpl)}
+          <div className="space-y-6">
+            <h4 className="font-bold text-lg text-[#2a2826]">Themes</h4>
+            <div className="space-y-3">
+              {categories.map((cat) => (
+                <label key={cat} className="flex items-center gap-4 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox" 
+                      className="peer sr-only"
+                      checked={selectedCategories.includes(cat)}
+                      onChange={() => {
+                        if (cat === 'All') setSelectedCategories(['All']);
+                        else {
+                          const newCats = selectedCategories.filter(c => c !== 'All');
+                          if (newCats.includes(cat)) {
+                            const filtered = newCats.filter(c => c !== cat);
+                            setSelectedCategories(filtered.length === 0 ? ['All'] : filtered);
+                          } else {
+                            setSelectedCategories([...newCats, cat]);
+                          }
+                        }
+                      }}
+                    />
+                    <div className="w-6 h-6 border-2 border-[#e8f3ed] rounded-lg peer-checked:bg-[#1a1c18] peer-checked:border-[#1a1c18] transition-all flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white hidden peer-checked:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium text-[#6b7c72] group-hover:text-[#2a2826] transition-colors">{cat}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <main className="flex-1 space-y-12">
+          <div className="bg-[#f4f7f5] p-10 rounded-3xl space-y-8 border border-[#e8f3ed] shadow-sm">
+            <h3 className="font-serif text-2xl text-[#2a2826]">Instant Personalization</h3>
+            <div className="flex flex-col sm:flex-row gap-5">
+              <input 
+                type="text" 
+                value={personalizationName}
+                onChange={(e) => setPersonalizationName(e.target.value)}
+                placeholder="Adam & Hawa"
+                className="flex-1 p-5 rounded-2xl border border-[#e8f3ed] bg-white outline-none focus:ring-2 focus:ring-[#e8f3ed] text-[#2a2826] shadow-inner"
+              />
+              <button 
+                onClick={handleSetName}
+                className="bg-[#1a1c18] text-white px-12 py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[#2a2826] transition-all"
               >
-                <div className="relative aspect-[3/4] rounded-sm overflow-hidden mb-8 grayscale-[50%] group-hover:grayscale-0 transition-all duration-700 shadow-sm group-hover:shadow-2xl">
-                  <img src={tpl.thumbnail} alt={tpl.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-stone-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                Apply Names
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-20">
+            {filteredTemplates.map((tpl) => (
+              <div key={tpl.id} className="group space-y-6 flex flex-col items-center">
+                <div className="relative aspect-[3/4] w-full bg-[#fdfcfb] rounded-[2.5rem] overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-700 flex items-center justify-center p-8 border border-[#e8f3ed]">
+                  <div className="w-full h-full scale-[0.9] transform transition-transform duration-700 group-hover:scale-[0.85]">
+                     <PreviewCanvas data={weddingData} template={tpl} />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <h5 className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.3em]">{tpl.fontFamily} style</h5>
-                  <p className="text-xl font-serif text-stone-800">{tpl.name}</p>
+                
+                <div className="text-center space-y-5">
+                  <h4 className="font-serif text-2xl text-[#2a2826] tracking-wide">{tpl.name}</h4>
+                  <button onClick={() => handleSelectTemplate(tpl)} className="px-10 py-4 bg-[#1a1c18] text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#2a2826] transition-all">
+                    Customize
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderGallery = () => (
-    <div className="max-w-7xl mx-auto px-6 py-32 min-h-screen bg-white">
-      <div className="text-center mb-24 space-y-6">
-        <span className="text-stone-400 text-[11px] font-bold uppercase tracking-[0.5em]">The Library</span>
-        <h2 className="text-5xl font-serif text-stone-900">Select Your Masterpiece</h2>
-        <p className="text-stone-500 max-w-xl mx-auto font-serif italic text-lg">Every invitation is a canvas for your unique story.</p>
+        </main>
       </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-        {TEMPLATES.map((tpl) => (
-          <div 
-            key={tpl.id}
-            className="group cursor-pointer"
-            onClick={() => handleSelectTemplate(tpl)}
-          >
-            <div className="relative aspect-[3/4] rounded-sm overflow-hidden mb-8 shadow-xl border border-stone-50 bg-stone-50 group-hover:shadow-2xl transition-all duration-700">
-              <img src={tpl.thumbnail} alt={tpl.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center p-8 text-center">
-                 <span className="text-stone-50 border border-stone-50 px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] backdrop-blur-sm">Customize Design</span>
-              </div>
-            </div>
-            <div className="text-center space-y-2">
-               <p className="text-lg font-serif text-stone-800">{tpl.name}</p>
-               <div className="flex justify-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-stone-200"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-stone-200"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-stone-200"></div>
-               </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    );
+  };
 
   const renderPricing = () => (
-    <div className="min-h-screen bg-[#faf9f6] py-32 px-6">
+    <div className="min-h-screen bg-[#fdfcfb] py-32 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-24 space-y-4">
-           <span className="text-stone-400 text-[11px] font-bold uppercase tracking-[0.5em]">Investment</span>
-           <h2 className="text-5xl font-serif text-stone-900">Pricing Packages</h2>
+        <div className="text-center mb-24 space-y-6">
+          <span className="text-[#6b7c72] text-[10px] font-bold tracking-[0.5em] uppercase">Invest in Memories</span>
+          <h2 className="text-5xl md:text-6xl font-serif text-[#2a2826]">Pricing Plans</h2>
         </div>
-        
-        <div className="grid lg:grid-cols-3 gap-12 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {[
-            { name: 'Bronze', color: '#b08d57', price: 'RM30', features: ['Calendar', 'Contacts', 'Countdown', 'Navigation', 'Song'], rank: '🥉' },
-            { name: 'Silver', color: '#c0c0c0', price: 'RM40', features: ['All Bronze Features', 'Effects', 'Attendance', 'RSVP/Wish'], rank: '🥈' },
-            { name: 'Gold', color: '#d4af37', price: 'RM60', features: ['All Silver Features', 'Photo Gallery', 'Money Gift', 'Wishlist', 'Custom Link'], rank: '🥇' }
+            { name: 'Bronze', price: 'RM30', features: ['Calendar', 'Contacts', 'Countdown', 'Navigation', 'Song'], rank: '🥉', theme: '#f4f1ed' },
+            { name: 'Silver', price: 'RM40', features: ['All Bronze Features', 'Effects', 'Attendance', 'RSVP/Wish'], rank: '🥈', theme: '#e8f3ed' },
+            { name: 'Gold', price: 'RM60', features: ['All Silver Features', 'Photo Gallery', 'Money Gift', 'Wishlist', 'Custom Link'], rank: '🥇', theme: '#fdf2f8' }
           ].map((pkg, i) => (
-            <div key={i} className="bg-white rounded-sm overflow-hidden shadow-2xl flex flex-col items-center border border-stone-100 transition-transform hover:-translate-y-2 duration-500">
-              <div className="w-full py-8 text-center font-serif text-2xl tracking-widest flex flex-col items-center gap-2 border-b border-stone-50">
-                <span className="text-sm opacity-50">{pkg.rank}</span>
-                {pkg.name}
+            <div key={i} className="bg-white p-12 rounded-[2.5rem] shadow-lg flex flex-col items-center border border-[#e8f3ed] hover:-translate-y-4 transition-transform duration-500">
+              <div className="w-20 h-20 rounded-full mb-8 flex items-center justify-center text-3xl shadow-inner" style={{ backgroundColor: pkg.theme }}>
+                {pkg.rank}
               </div>
-              <div className="flex-1 py-12 px-10 space-y-5 text-center text-stone-500 text-sm font-light">
-                {pkg.features.map((f, j) => (
-                  <p key={j} className={f.includes('All') ? 'font-bold text-stone-800' : ''}>{f}</p>
-                ))}
+              <h3 className="text-3xl font-serif mb-8 text-[#2a2826]">{pkg.name}</h3>
+              <div className="flex-1 space-y-5 text-center text-[#6b7c72] text-sm mb-12">
+                {pkg.features.map((f, j) => <p key={j} className="font-medium">{f}</p>)}
               </div>
-              <div className="p-10 w-full text-center bg-stone-50">
-                <div className="text-4xl font-serif text-stone-900 mb-8">{pkg.price}</div>
-                <button className="w-full py-4 bg-stone-900 text-stone-50 font-bold text-[10px] uppercase tracking-[0.3em] hover:bg-stone-800 transition-all">
-                  Get Started
-                </button>
-              </div>
+              <div className="text-4xl font-serif text-[#1a1c18] mb-10">{pkg.price}</div>
+              <button className="w-full py-5 bg-[#1a1c18] text-white font-bold text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#2a2826] transition-all">Select Plan</button>
             </div>
           ))}
         </div>
@@ -247,94 +324,57 @@ const App: React.FC = () => {
   );
 
   const renderEditor = () => (
-    <div className="bg-stone-50 min-h-[calc(100vh-80px)] px-4 md:px-12 py-12">
-      <div className="max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12 items-start">
-        
-        {/* Left Side: Editor Panels */}
-        <div className="lg:col-span-4 h-[calc(100vh-180px)] lg:sticky lg:top-28">
+    <div className="bg-[#f4f7f5] min-h-[calc(100vh-80px)] px-4 md:px-12 py-12">
+      <div className="lg:hidden sticky top-20 z-40 flex bg-white/90 backdrop-blur-md border border-[#e8f3ed] rounded-full mb-8 overflow-hidden shadow-xl mx-auto max-w-sm">
+        <button onClick={() => setEditorTab('edit')} className={`flex-1 py-5 text-[11px] font-bold uppercase tracking-widest transition-all ${editorTab === 'edit' ? 'bg-[#1a1c18] text-white' : 'text-[#6b7c72]'}`}>Edit</button>
+        <button onClick={() => setEditorTab('preview')} className={`flex-1 py-5 text-[11px] font-bold uppercase tracking-widest transition-all ${editorTab === 'preview' ? 'bg-[#1a1c18] text-white' : 'text-[#6b7c72]'}`}>Preview</button>
+      </div>
+
+      <div className="max-w-[1440px] mx-auto grid lg:grid-cols-12 gap-16">
+        <div className={`lg:col-span-4 ${editorTab === 'edit' ? 'block' : 'hidden lg:block'} lg:sticky lg:top-28`}>
           <EditorPanel data={weddingData} setData={setWeddingData} />
         </div>
-
-        {/* Center: Live Preview */}
-        <div className="lg:col-span-4 flex flex-col items-center">
-          <div className="w-full max-w-[320px] aspect-[9/19] bg-white rounded-[3rem] overflow-hidden border-[10px] border-stone-900 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)]">
-             <PreviewCanvas data={weddingData} template={selectedTemplate} />
-          </div>
-          <p className="mt-8 text-[10px] font-bold text-stone-400 uppercase tracking-[0.4em]">Live Digital View</p>
+        <div className={`lg:col-span-4 ${editorTab === 'preview' ? 'flex' : 'hidden lg:flex'} flex-col items-center justify-center`}>
+          <PhoneMockup template={selectedTemplate} />
         </div>
-
-        {/* Right Side: Quick Settings & Actions */}
-        <div className="lg:col-span-4 space-y-8">
-          <div className="bg-white p-8 rounded-sm shadow-sm space-y-8">
-             <h4 className="text-[11px] font-bold text-stone-400 uppercase tracking-[0.4em]">Style Options</h4>
-             <div className="grid grid-cols-4 gap-4">
+        <div className={`lg:col-span-4 space-y-10 ${editorTab === 'edit' ? 'block' : 'hidden lg:block'}`}>
+          <div className="bg-white p-10 rounded-3xl shadow-sm space-y-8 border border-[#e8f3ed]">
+            <h4 className="text-[10px] font-bold text-[#6b7c72] uppercase tracking-[0.5em]">Templates</h4>
+            <div className="grid grid-cols-4 gap-4">
                {TEMPLATES.map(tpl => (
-                 <button 
-                  key={tpl.id}
-                  onClick={() => setSelectedTemplate(tpl)}
-                  className={`relative aspect-square rounded-sm overflow-hidden border-2 transition-all ${selectedTemplate.id === tpl.id ? 'border-stone-900 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                 >
+                 <button key={tpl.id} onClick={() => setSelectedTemplate(tpl)} className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all ${selectedTemplate.id === tpl.id ? 'border-[#1a1c18] scale-110 shadow-xl' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                    <img src={tpl.thumbnail} className="w-full h-full object-cover" />
                  </button>
                ))}
-             </div>
+            </div>
           </div>
-
-          <div className="bg-stone-900 p-10 rounded-sm shadow-2xl space-y-6">
-              <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.5em]">Ready to Launch</p>
-              <button className="w-full py-5 bg-stone-50 text-stone-900 font-bold uppercase tracking-[0.2em] transition-all hover:bg-white active:scale-95 shadow-lg">
-                Finalize & Share
-              </button>
-              <p className="text-white/20 text-center text-[9px] uppercase tracking-widest italic">Includes lifetime digital hosting</p>
+          <div className="bg-[#1a1c18] p-12 rounded-[2.5rem] shadow-2xl space-y-8 text-center">
+            <button className="w-full py-6 bg-white text-[#1a1c18] font-bold uppercase tracking-[0.25em] rounded-2xl hover:bg-[#fdfcfb] transition-all shadow-xl text-xs">Publish Invitation</button>
           </div>
         </div>
-
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <Header setView={setView} currentView={view} />
-      
       <main>
         {view === ViewMode.LANDING && renderLanding()}
         {view === ViewMode.GALLERY && renderGallery()}
         {view === ViewMode.EDITOR && renderEditor()}
         {view === ViewMode.PRICING && renderPricing()}
       </main>
-
-      {/* Reduced Footer Height from py-16 to py-10 */}
-      <footer className="bg-white text-stone-900 py-10 px-6 border-t border-stone-100">
+      <footer className="bg-white text-[#2a2826] py-24 px-6 md:px-12 border-t border-[#e8f3ed]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-stone-900 rounded-full flex items-center justify-center text-white font-serif text-sm">I</div>
-            <h1 className="text-lg font-bold tracking-tight">istiadat<span className="text-stone-400">.card</span></h1>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-[#1a1c18] rounded-2xl flex items-center justify-center text-white font-serif text-2xl shadow-lg">I</div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#1a1c18]">istiadat<span className="text-[#6b7c72] font-light">.card</span></h1>
           </div>
-          
-          <div className="flex gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-stone-400">
-            <button onClick={() => setView(ViewMode.GALLERY)} className="hover:text-stone-900 transition-colors">Templates</button>
-            <button onClick={() => setView(ViewMode.PRICING)} className="hover:text-stone-900 transition-colors">Pricing</button>
-            <a href="#" className="hover:text-stone-900 transition-colors">Contact</a>
+          <div className="flex gap-12 text-[11px] font-bold uppercase tracking-[0.4em] text-[#6b7c72]">
+            <button onClick={() => setView(ViewMode.GALLERY)}>Templates</button>
+            <button onClick={() => setView(ViewMode.PRICING)}>Pricing</button>
           </div>
-
-          <div className="flex gap-6">
-             {[
-               <path key="fb" d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>,
-               <React.Fragment key="ig">
-                 <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-               </React.Fragment>
-             ].map((icon, idx) => (
-               <div key={idx} className="text-stone-300 hover:text-stone-900 cursor-pointer transition-colors">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{icon}</svg>
-               </div>
-             ))}
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-stone-50 text-center text-[9px] font-medium text-stone-300 uppercase tracking-[0.3em]">
-          &copy; 2025 istiadat.card — All rights reserved
         </div>
       </footer>
     </div>

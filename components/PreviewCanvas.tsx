@@ -18,105 +18,81 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({ data, template }) 
 
   return (
     <div 
-      className="relative w-full h-full shadow-2xl overflow-hidden mx-auto transition-all duration-500 bg-white"
-      style={{ 
-        color: template.textColor, 
-      }}
+      className="relative w-full h-full overflow-hidden mx-auto bg-white flex flex-col items-center"
+      style={{ color: template.textColor }}
     >
-      {/* Background Decorative Elements - Green Leafy Branches */}
-      <div className="absolute top-0 right-0 w-64 h-64 opacity-90 pointer-events-none z-0">
-        <img 
-          src="https://png.pngtree.com/png-clipart/20230913/original/pngtree-green-leaves-and-branches-on-white-background-illustration-png-image_11060938.png" 
-          className="w-full h-full object-contain translate-x-12 -translate-y-8"
-          alt="botanical top right"
-        />
-      </div>
-      
-      <div className="absolute bottom-20 left-0 w-64 h-64 opacity-90 pointer-events-none z-0">
-        <img 
-          src="https://png.pngtree.com/png-clipart/20230913/original/pngtree-green-leaves-and-branches-on-white-background-illustration-png-image_11060938.png" 
-          className="w-full h-full object-contain -translate-x-12 translate-y-8 rotate-180"
-          alt="botanical bottom left"
-        />
-      </div>
-
-      {/* Subtle background floating elements */}
+      {/* Decorative Dots - matching the image */}
       <div className="absolute inset-0 pointer-events-none z-0">
-         <div className="absolute top-[30%] left-[20%] w-2 h-2 bg-stone-100 rounded-full"></div>
-         <div className="absolute top-[15%] right-[40%] w-3 h-3 bg-stone-50 rounded-full"></div>
-         <div className="absolute bottom-[40%] right-[25%] w-2 h-2 bg-stone-100 rounded-full"></div>
+         <div className="absolute top-[20%] left-[60%] w-2 h-2 bg-[#f0f0f0] rounded-full"></div>
+         <div className="absolute top-[35%] left-[30%] w-2 h-2 bg-[#f4f4f4] rounded-full"></div>
+         {/* Template specific decor - made subtle */}
+         <div className="absolute top-0 right-0 w-40 h-40 opacity-10">
+           <img src="https://png.pngtree.com/png-clipart/20230913/original/pngtree-green-leaves-and-branches-on-white-background-illustration-png-image_11060938.png" className="w-full h-full object-contain" alt="" />
+         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="relative h-full flex flex-col items-center justify-center py-16 px-10 z-10">
+      <div className="relative flex-1 flex flex-col items-center justify-center py-16 px-6 z-10 w-full">
         
-        {/* Header Text */}
-        <p className="uppercase tracking-[0.4em] text-[10px] mb-12 font-medium text-stone-600 font-sans">
+        {/* Header Label */}
+        <p className="uppercase tracking-[0.3em] text-[9px] md:text-[10px] mb-12 font-bold text-stone-400 font-sans">
           WALIMATUL URUS
         </p>
         
         {/* Names Section */}
-        <div className={`flex flex-col items-center gap-2 mb-10 ${getFontClass()}`}>
-          <h2 className="text-5xl font-light tracking-wide text-stone-800 font-serif">
-            {data.groomNick.charAt(0).toUpperCase() + data.groomNick.slice(1).toLowerCase()}
+        <div className={`flex flex-col items-center gap-1 mb-12 text-[#2a2826] ${getFontClass()}`}>
+          <h2 className="text-4xl md:text-6xl font-serif tracking-tight leading-none mb-1">
+            {data.groomNick}
           </h2>
-          <span className="text-xl opacity-60 font-serif italic font-light">&</span>
-          <h2 className="text-5xl font-light tracking-wide text-stone-800 font-serif">
-            {data.brideNick.charAt(0).toUpperCase() + data.brideNick.slice(1).toLowerCase()}
+          <span className="text-lg md:text-2xl font-serif italic text-stone-300">&</span>
+          <h2 className="text-4xl md:text-6xl font-serif tracking-tight leading-none">
+            {data.brideNick}
           </h2>
         </div>
 
         {/* Date Section */}
-        <div className="mt-4">
-          <p className="text-[11px] tracking-[0.25em] font-medium opacity-80 uppercase text-stone-700 font-sans">
+        <div className="mt-8 border-t border-stone-50 pt-8 w-1/2 flex justify-center">
+          <p className="text-[9px] md:text-[10px] tracking-[0.2em] font-bold uppercase text-stone-400 font-sans">
             SELASA • 27.01.26
           </p>
         </div>
       </div>
 
-      {/* Bottom Navigation Bar - Reduced height from 85px to 70px */}
-      <div className="absolute bottom-0 inset-x-0 h-[70px] bg-[#e1e3d0] flex items-center justify-around px-6 z-30 border-t border-black/5">
+      {/* Bottom Navigation Bar - Updated to match screenshot pill style */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] h-[56px] bg-[#f0f2e0] rounded-2xl flex items-center justify-around px-4 z-30 shadow-sm border border-white/20">
         
-        {/* Phone Icon */}
-        <div className="flex flex-col items-center justify-center cursor-pointer text-stone-800 hover:scale-110 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="text-stone-600 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
           </svg>
         </div>
 
-        {/* Play Circle Icon */}
-        <div className="flex flex-col items-center justify-center cursor-pointer text-stone-800 hover:scale-110 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="text-stone-600 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
-            <polygon points="10 8 16 12 10 16 10 8" fill="none"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
           </svg>
         </div>
 
-        {/* Location Pin Icon */}
-        <div className="flex flex-col items-center justify-center cursor-pointer text-stone-800 hover:scale-110 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="text-stone-600 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="2.5"/>
+            <circle cx="12" cy="10" r="3"/>
           </svg>
         </div>
 
-        {/* Gift Box Icon */}
-        <div className="flex flex-col items-center justify-center cursor-pointer text-stone-800 hover:scale-110 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="8" width="18" height="13" rx="1"/>
-            <path d="M12 8v13"/>
-            <path d="M3 12h18"/>
-            <path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
+        <div className="text-stone-600 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 12V8H4v4"/>
+            <rect x="2" y="12" width="20" height="8" rx="2"/>
+            <path d="M12 12V8M12 4v4"/>
           </svg>
         </div>
 
-        {/* RSVP Envelope Icon */}
-        <div className="flex flex-col items-center justify-center cursor-pointer text-stone-800 hover:scale-110 transition-transform">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 8v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V8"/>
-            <path d="M20 8l-8 5-8-5"/>
-            <rect x="7" y="3" width="10" height="7" rx="0.5" fill="white" stroke="currentColor" strokeWidth="0.8"/>
-            <text x="12" y="7.5" fontSize="3" textAnchor="middle" fill="currentColor" fontWeight="bold" style={{fontFamily: 'sans-serif', letterSpacing: '0.2px'}}>RSVP</text>
+        <div className="text-stone-600 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
           </svg>
         </div>
 

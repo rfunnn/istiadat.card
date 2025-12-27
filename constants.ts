@@ -3,44 +3,116 @@ import { Template, WeddingData } from './types';
 
 export const TEMPLATES: Template[] = [
   {
-    id: 'classic-gold',
-    name: 'Botanical Minimal',
+    id: 'BAB006',
+    name: 'BAB006',
     thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600',
     themeColor: '#ffffff',
-    accentColor: '#8a9a5b',
+    accentColor: '#fce7f3',
     textColor: '#2d3436',
     fontFamily: 'serif',
-    bgPattern: 'none'
+    bgPattern: 'none',
+    category: 'Baby',
+    colorHex: '#ffc0cb',
+    likes: 124,
+    views: 1205
   },
   {
-    id: 'minimalist-white',
-    name: 'Eternal Minimalist',
+    id: 'VIN049',
+    name: 'VIN049',
     thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600',
     themeColor: '#ffffff',
     accentColor: '#333333',
     textColor: '#1a1a1a',
     fontFamily: 'sans',
-    bgPattern: 'linear-gradient(to bottom, #fff, #f9f9f9)'
+    bgPattern: 'linear-gradient(to bottom, #fff, #f9f9f9)',
+    category: 'Vintage',
+    colorHex: '#d6d3d1',
+    likes: 89,
+    views: 840
   },
   {
-    id: 'royal-floral',
-    name: 'Royal Botanical',
+    id: 'WAT035',
+    name: 'WAT035',
     thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600',
     themeColor: '#fdf2f8',
     accentColor: '#be185d',
     textColor: '#500724',
     fontFamily: 'script',
-    bgPattern: 'url("https://www.transparenttextures.com/patterns/cubes.png")'
+    bgPattern: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
+    category: 'Watercolor',
+    colorHex: '#fbcfe8',
+    likes: 231,
+    views: 2100
   },
   {
-    id: 'modern-dark',
-    name: 'Midnight Elegance',
+    id: 'WAT034',
+    name: 'WAT034',
     thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600',
     themeColor: '#1a1a1a',
     accentColor: '#e5e7eb',
     textColor: '#ffffff',
     fontFamily: 'serif',
-    bgPattern: 'linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%)'
+    bgPattern: 'linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%)',
+    category: 'Watercolor',
+    colorHex: '#fbbf24',
+    likes: 156,
+    views: 1450
+  },
+  {
+    id: 'FLO122',
+    name: 'FLO122',
+    thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#ffffff',
+    accentColor: '#8a9a5b',
+    textColor: '#2d3436',
+    fontFamily: 'serif',
+    bgPattern: 'none',
+    category: 'Floral',
+    colorHex: '#86efac',
+    likes: 312,
+    views: 3200
+  },
+  {
+    id: 'WAT033',
+    name: 'WAT033',
+    thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#fdf2f8',
+    accentColor: '#be185d',
+    textColor: '#500724',
+    fontFamily: 'script',
+    bgPattern: 'none',
+    category: 'Watercolor',
+    colorHex: '#cbd5e1',
+    likes: 98,
+    views: 920
+  },
+  {
+    id: 'WAT032',
+    name: 'WAT032',
+    thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#1a1a1a',
+    accentColor: '#e5e7eb',
+    textColor: '#ffffff',
+    fontFamily: 'serif',
+    bgPattern: 'none',
+    category: 'Watercolor',
+    colorHex: '#1e293b',
+    likes: 45,
+    views: 410
+  },
+  {
+    id: 'WAT031',
+    name: 'WAT031',
+    thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#ffffff',
+    accentColor: '#333333',
+    textColor: '#1a1a1a',
+    fontFamily: 'sans',
+    bgPattern: 'none',
+    category: 'Watercolor',
+    colorHex: '#fcd34d',
+    likes: 212,
+    views: 2500
   }
 ];
 

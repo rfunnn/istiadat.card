@@ -20,11 +20,16 @@
         }
         
         @keyframes bounce-slow {
-            0%, 100% { transform: translateY(-5%); }
-            50% { transform: translateY(5%); }
+            0%, 100% { transform: translateY(-3%); }
+            50% { transform: translateY(3%); }
         }
         .animate-bounce-slow {
             animation: bounce-slow 4s ease-in-out infinite;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Custom scrollbar */

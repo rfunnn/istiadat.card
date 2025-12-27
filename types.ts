@@ -33,6 +33,10 @@ export interface Template {
   textColor: string;
   fontFamily: 'serif' | 'sans' | 'script';
   bgPattern: string;
+  category: string;
+  colorHex: string;
+  likes: number;
+  views: number;
 }
 
-export type TemplateId = 'classic-gold' | 'minimalist-white' | 'royal-floral' | 'modern-dark';
+export type TemplateId = string;
