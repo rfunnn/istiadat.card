@@ -1,0 +1,7 @@
+{
+  "name": "istiadat.card",
+  "description": "An elegant wedding e-card generator and invitation builder with AI-powered content generation and beautiful templates.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

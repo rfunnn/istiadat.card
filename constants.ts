@@ -1,0 +1,61 @@
+
+import { Template, WeddingData } from './types';
+
+export const TEMPLATES: Template[] = [
+  {
+    id: 'classic-gold',
+    name: 'Botanical Minimal',
+    thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#ffffff',
+    accentColor: '#8a9a5b',
+    textColor: '#2d3436',
+    fontFamily: 'serif',
+    bgPattern: 'none'
+  },
+  {
+    id: 'minimalist-white',
+    name: 'Eternal Minimalist',
+    thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#ffffff',
+    accentColor: '#333333',
+    textColor: '#1a1a1a',
+    fontFamily: 'sans',
+    bgPattern: 'linear-gradient(to bottom, #fff, #f9f9f9)'
+  },
+  {
+    id: 'royal-floral',
+    name: 'Royal Botanical',
+    thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#fdf2f8',
+    accentColor: '#be185d',
+    textColor: '#500724',
+    fontFamily: 'script',
+    bgPattern: 'url("https://www.transparenttextures.com/patterns/cubes.png")'
+  },
+  {
+    id: 'modern-dark',
+    name: 'Midnight Elegance',
+    thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600',
+    themeColor: '#1a1a1a',
+    accentColor: '#e5e7eb',
+    textColor: '#ffffff',
+    fontFamily: 'serif',
+    bgPattern: 'linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%)'
+  }
+];
+
+export const INITIAL_WEDDING_DATA: WeddingData = {
+  brideName: 'Hawa Binti Ahmad',
+  groomName: 'Adam Bin Ibrahim',
+  brideNick: 'Hawa',
+  groomNick: 'Adam',
+  date: '2026-01-27',
+  time: '11:00 AM - 4:00 PM',
+  venue: 'Laman Wedding Hall',
+  venueAddress: 'Lot 123, Jalan Permai, Kuala Lumpur',
+  fatherName: 'Ibrahim Bin Hassan',
+  motherName: 'Aminah Binti Ismail',
+  quote: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya.',
+  rsvpContact: '+6012-3456789',
+  musicUrl: '',
+};
