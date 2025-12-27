@@ -88,20 +88,20 @@ const App: React.FC = () => {
         <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
 
-      <section className="relative flex flex-col items-center px-6 md:px-12 lg:px-24 py-12 md:py-16">
-        <div className="relative z-20 w-full flex flex-col items-center max-w-4xl mx-auto">
+      <section className="relative flex items-center px-6 md:px-12 lg:px-24 pt-4 md:pt-8 pb-12 md:pb-24">
+        <div className="relative z-20 w-full grid lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-7xl mx-auto">
           
-          <div className="flex flex-col items-center space-y-8 md:space-y-10 text-center w-full">
-            {/* Header Content */}
-            <div className="space-y-4 w-full flex flex-col items-center">
-              <div className="inline-flex items-center gap-4 px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
+          {/* Text Content */}
+          <div className="lg:col-span-6 flex flex-col items-center lg:items-start space-y-8 md:space-y-10 text-center lg:text-left">
+            <div className="space-y-4 md:space-y-6 w-full flex flex-col items-center lg:items-start">
+              <div className="inline-flex items-center gap-4 px-6 md:px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
                 <span className="text-stone-500 text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase">Exquisite Invitations</span>
               </div>
               <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#2a2826] tracking-tight leading-[1.05]">
                 Digital Invitation <br /> 
-                <span className="italic font-light text-[#6b7c72]">Redefined</span>
+                <span className="italic font-light text-[#6b7c72]">For Various Occasions</span>
               </h2>
-              <div className="h-20 md:h-32 flex items-center overflow-hidden justify-center">
+              <div className="h-20 md:h-32 flex items-center overflow-hidden justify-center lg:justify-start">
                 <span 
                   className="text-6xl md:text-8xl lg:text-9xl font-serif text-[#1a1c18] capitalize tracking-tighter whitespace-nowrap opacity-0 animate-[fade-in_0.5s_ease-in_forwards]" 
                   key={occasionIndex}
@@ -111,52 +111,89 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            <p className="text-stone-500 text-base md:text-xl leading-relaxed max-w-sm md:max-w-xl font-serif italic mb-8">
+            {/* Paragraph hidden on mobile */}
+            <p className="hidden md:block text-stone-500 text-base md:text-xl leading-relaxed md:max-w-xl font-serif italic lg:pr-12 mt-10">
               Transform your most precious moments into a sophisticated digital experience. Elegant, interactive, and timeless.
             </p>
-          </div>
 
-          {/* Phone Showcase - Moved BEFORE the button */}
-          <div className="relative flex h-[450px] md:h-[600px] w-full items-center justify-center z-10 pt-4 mb-12">
-            <div className="relative w-full h-full flex items-center justify-center">
-              <div className="absolute -translate-x-12 md:-translate-x-16 -translate-y-6 md:-translate-y-8">
-                <PhoneMockup 
-                  template={TEMPLATES[1]} 
-                  scale={0.75} 
-                  tilted={-12}
-                  borderColor="#e5e7eb"
-                  className="grayscale opacity-30"
-                />
-              </div>
-
-              <div className="relative z-10">
-                <PhoneMockup 
-                  template={TEMPLATES[0]} 
-                  scale={0.9}
-                  className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)]" 
-                />
-              </div>
-
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[70%] bg-[#6b7c72]/5 rounded-full blur-[80px] -z-20"></div>
+            {/* Try Now For Free Button - Visible on desktop */}
+            <div className="hidden lg:block w-full">
+              <button onClick={() => setView(ViewMode.GALLERY)} className="bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95">
+                Try Now For Free
+              </button>
             </div>
           </div>
 
-          {/* Start Design Button - Moved AFTER the phone image */}
-          <div className="w-full max-w-sm sm:w-auto pb-12">
-            <button onClick={() => setView(ViewMode.GALLERY)} className="w-full sm:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95">
-              Start Design
+          {/* Phone Showcase - Unified Overlay Style */}
+          <div className="lg:col-span-6 relative h-[280px] md:h-[600px] lg:h-[700px] w-full flex items-center justify-center z-10">
+            <div className="relative w-full h-full flex items-center justify-center lg:justify-end">
+              
+              {/* MOBILE OVERLAY STYLE (stacked phones) */}
+              <div className="lg:hidden relative w-full h-full flex items-center justify-center">
+                {/* Background Ghost Phone (Mobile) */}
+                <div className="absolute -translate-x-12 -translate-y-4">
+                  <PhoneMockup 
+                    template={TEMPLATES[1]} 
+                    scale={0.35} 
+                    tilted={-12}
+                    borderColor="#e5e7eb"
+                    className="grayscale opacity-20"
+                  />
+                </div>
+                {/* Foreground Phone (Mobile) */}
+                <div className="relative z-10 translate-x-4">
+                  <PhoneMockup 
+                    template={TEMPLATES[0]} 
+                    scale={0.45}
+                    className="shadow-xl" 
+                  />
+                </div>
+              </div>
+
+              {/* DESKTOP OVERLAY STYLE */}
+              <div className="hidden lg:flex relative w-full h-full items-center justify-end">
+                {/* Background Ghost Phone (Desktop) */}
+                <div className="absolute -translate-x-48 -translate-y-16">
+                  <PhoneMockup 
+                    template={TEMPLATES[1]} 
+                    scale={0.7} 
+                    tilted={-15}
+                    borderColor="#e5e7eb"
+                    className="grayscale opacity-20"
+                  />
+                </div>
+                {/* Foreground Phone (Desktop) */}
+                <div className="relative z-10 mr-4">
+                  <PhoneMockup 
+                    template={TEMPLATES[0]} 
+                    scale={0.9}
+                    className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)]" 
+                  />
+                </div>
+              </div>
+
+              {/* Glowing Background Effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[80%] bg-[#6b7c72]/5 rounded-full blur-[100px] -z-20"></div>
+            </div>
+          </div>
+
+          {/* Try Now For Free Button - Visible only on mobile */}
+          <div className="lg:hidden w-full flex justify-center pt-4 pb-12">
+            <button onClick={() => setView(ViewMode.GALLERY)} className="w-full max-w-sm bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 active:scale-95">
+              Try Now For Free
             </button>
           </div>
+
         </div>
       </section>
 
       {/* Interactive Features Section */}
-      <section className="relative py-24 bg-[#f4f9f7] overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-[#f4f9f7] overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
           <div className="inline-block mb-8 px-10 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-stone-500">Core Features</span>
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-stone-500">Platform Highlights</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-serif text-[#2a2826] mb-16 tracking-tight">Capabilities</h2>
+          <h2 className="text-4xl md:text-6xl font-serif text-[#2a2826] mb-16 tracking-tight">Core Features</h2>
           
           <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-20 max-w-4xl mx-auto">
             {features.map((feature, i) => (
@@ -171,21 +208,35 @@ const App: React.FC = () => {
           </div>
 
           <div className="relative inline-block">
+            {/* Main Center Mockup */}
             <div className="relative z-10 w-[240px] md:w-[320px] aspect-[9/19] bg-white rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-[12px] border-[#1a1c18] shadow-[0_60px_120px_-30px_rgba(26,28,24,0.15)] mx-auto transition-transform duration-700">
                <PreviewCanvas data={weddingData} template={TEMPLATES[5]} />
             </div>
 
-            <div className="absolute left-[-60px] md:left-[-140px] top-[30%] transition-all duration-500 hidden sm:block" key={`left-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-[#e8f3ed] flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#6b7c72] animate-pulse"></div>
-                <p className="text-[#2a2826] font-bold text-xs md:text-sm whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
+            {/* Floating Labels (Visible on Desktop) */}
+            <div className="absolute left-[-100px] md:left-[-180px] top-[25%] transition-all duration-500 hidden lg:block" key={`left-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-8 py-5 rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-4">
+                <div className="w-3 h-3 rounded-full bg-[#6b7c72] animate-pulse"></div>
+                <p className="text-[#2a2826] font-bold text-sm md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
               </div>
             </div>
 
-            <div className="absolute right-[-60px] md:right-[-140px] top-[60%] transition-all duration-500 hidden sm:block" key={`right-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-6 py-3 rounded-2xl shadow-xl border border-[#e8f3ed] flex items-center gap-3">
-                <p className="text-[#2a2826] font-bold text-xs md:text-sm whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
-                <div className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse"></div>
+            <div className="absolute right-[-100px] md:right-[-180px] top-[65%] transition-all duration-500 hidden lg:block" key={`right-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-8 py-5 rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-4">
+                <p className="text-[#2a2826] font-bold text-sm md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
+                <div className="w-3 h-3 rounded-full bg-[#d4af37] animate-pulse"></div>
+              </div>
+            </div>
+            
+            {/* Floating Labels (Simpler for Tablet) */}
+            <div className="absolute left-[-60px] top-[30%] transition-all duration-500 hidden sm:block lg:hidden" key={`left-tablet-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-4 py-3 rounded-xl shadow-lg border border-stone-100 flex items-center gap-2">
+                <p className="text-[#2a2826] font-bold text-xs whitespace-nowrap">{features[activeFeatureIndex].left}</p>
+              </div>
+            </div>
+            <div className="absolute right-[-60px] top-[60%] transition-all duration-500 hidden sm:block lg:hidden" key={`right-tablet-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-4 py-3 rounded-xl shadow-lg border border-stone-100 flex items-center gap-2">
+                <p className="text-[#2a2826] font-bold text-xs whitespace-nowrap">{features[activeFeatureIndex].right}</p>
               </div>
             </div>
           </div>
