@@ -14,13 +14,18 @@ const App: React.FC = () => {
   const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
   
   // Gallery Filters
+  const [showFilters, setShowFilters] = useState(false);
   const [personalizationName, setPersonalizationName] = useState('Adam & Hawa');
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['All']);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('By Latest');
 
   const [occasionIndex, setOccasionIndex] = useState(0);
   const occasions = ['wedding', 'business', 'aqiqah', 'tahlil', 'birthday', 'open house'];
+
+  // Scroll to top on every view change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [view]);
 
   useEffect(() => {
     if (view === ViewMode.LANDING) {
@@ -47,7 +52,6 @@ const App: React.FC = () => {
   const handleSelectTemplate = (template: Template) => {
     setSelectedTemplate(template);
     setView(ViewMode.EDITOR);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSetName = () => {
@@ -57,6 +61,12 @@ const App: React.FC = () => {
         ...weddingData,
         groomNick: parts[0].trim(),
         brideNick: parts[1].trim()
+      });
+    } else {
+      setWeddingData({
+        ...weddingData,
+        groomNick: personalizationName.trim(),
+        brideNick: ""
       });
     }
   };
@@ -91,8 +101,8 @@ const App: React.FC = () => {
       <section className="relative flex items-center px-6 md:px-12 lg:px-24 pt-4 md:pt-8 pb-12 md:pb-24">
         <div className="relative z-20 w-full grid lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-7xl mx-auto">
           
-          {/* Text Content */}
-          <div className="lg:col-span-6 flex flex-col items-center lg:items-start space-y-8 md:space-y-10 text-center lg:text-left">
+          {/* Column 1 - Text Content */}
+          <div className="lg:col-span-6 relative z-30 flex flex-col items-center lg:items-start space-y-8 md:space-y-10 text-center lg:text-left">
             <div className="space-y-4 md:space-y-6 w-full flex flex-col items-center lg:items-start">
               <div className="inline-flex items-center gap-4 px-6 md:px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
                 <span className="text-stone-500 text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase">Exquisite Invitations</span>
@@ -111,26 +121,26 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            {/* Paragraph hidden on mobile */}
             <p className="hidden md:block text-stone-500 text-base md:text-xl leading-relaxed md:max-w-xl font-serif italic lg:pr-12 mt-10">
               Transform your most precious moments into a sophisticated digital experience. Elegant, interactive, and timeless.
             </p>
 
-            {/* Try Now For Free Button - Visible on desktop */}
-            <div className="hidden lg:block w-full">
-              <button onClick={() => setView(ViewMode.GALLERY)} className="bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95">
+            {/* Desktop Button - Hidden on mobile */}
+            <div className="hidden lg:flex w-full justify-start">
+              <button 
+                onClick={() => setView(ViewMode.GALLERY)} 
+                className="lg:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95 cursor-pointer"
+              >
                 Try Now For Free
               </button>
             </div>
           </div>
 
-          {/* Phone Showcase - Unified Overlay Style */}
-          <div className="lg:col-span-6 relative h-[280px] md:h-[600px] lg:h-[700px] w-full flex items-center justify-center z-10">
-            <div className="relative w-full h-full flex items-center justify-center lg:justify-end">
+          {/* Column 2 - Phone Showcase + Mobile Button integrated */}
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center z-10">
+            <div className="relative w-full h-[280px] md:h-[600px] lg:h-[700px] flex items-center justify-center lg:justify-end">
               
-              {/* MOBILE OVERLAY STYLE (stacked phones) */}
               <div className="lg:hidden relative w-full h-full flex items-center justify-center">
-                {/* Background Ghost Phone (Mobile) */}
                 <div className="absolute -translate-x-12 -translate-y-4">
                   <PhoneMockup 
                     template={TEMPLATES[1]} 
@@ -140,7 +150,6 @@ const App: React.FC = () => {
                     className="grayscale opacity-20"
                   />
                 </div>
-                {/* Foreground Phone (Mobile) */}
                 <div className="relative z-10 translate-x-4">
                   <PhoneMockup 
                     template={TEMPLATES[0]} 
@@ -150,9 +159,7 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* DESKTOP OVERLAY STYLE */}
               <div className="hidden lg:flex relative w-full h-full items-center justify-end">
-                {/* Background Ghost Phone (Desktop) */}
                 <div className="absolute -translate-x-48 -translate-y-16">
                   <PhoneMockup 
                     template={TEMPLATES[1]} 
@@ -162,7 +169,6 @@ const App: React.FC = () => {
                     className="grayscale opacity-20"
                   />
                 </div>
-                {/* Foreground Phone (Desktop) */}
                 <div className="relative z-10 mr-4">
                   <PhoneMockup 
                     template={TEMPLATES[0]} 
@@ -171,23 +177,24 @@ const App: React.FC = () => {
                   />
                 </div>
               </div>
-
-              {/* Glowing Background Effect */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[80%] bg-[#6b7c72]/5 rounded-full blur-[100px] -z-20"></div>
             </div>
-          </div>
 
-          {/* Try Now For Free Button - Visible only on mobile */}
-          <div className="lg:hidden w-full flex justify-center pt-4 pb-12">
-            <button onClick={() => setView(ViewMode.GALLERY)} className="w-full max-w-sm bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 active:scale-95">
-              Try Now For Free
-            </button>
+            {/* Mobile Button - Integrated inside this column to be closer to the image */}
+            <div className="lg:hidden w-full flex justify-center py-4 relative z-50">
+              <button 
+                onClick={() => setView(ViewMode.GALLERY)} 
+                className="w-full max-w-[280px] bg-[#1a1c18] text-white px-10 py-5 rounded-full font-bold text-xs uppercase tracking-[0.25em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95 cursor-pointer"
+              >
+                Try Now For Free
+              </button>
+            </div>
           </div>
 
         </div>
       </section>
 
-      {/* Interactive Features Section */}
+      {/* Core Features Section */}
       <section className="relative py-24 md:py-32 bg-[#f4f9f7] overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
           <div className="inline-block mb-8 px-10 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
@@ -208,12 +215,10 @@ const App: React.FC = () => {
           </div>
 
           <div className="relative inline-block">
-            {/* Main Center Mockup */}
             <div className="relative z-10 w-[240px] md:w-[320px] aspect-[9/19] bg-white rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-[12px] border-[#1a1c18] shadow-[0_60px_120px_-30px_rgba(26,28,24,0.15)] mx-auto transition-transform duration-700">
                <PreviewCanvas data={weddingData} template={TEMPLATES[5]} />
             </div>
 
-            {/* Floating Labels (Visible on Desktop) */}
             <div className="absolute left-[-100px] md:left-[-180px] top-[25%] transition-all duration-500 hidden lg:block" key={`left-${activeFeatureIndex}`}>
               <div className="bg-white/95 backdrop-blur-xl px-8 py-5 rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-4">
                 <div className="w-3 h-3 rounded-full bg-[#6b7c72] animate-pulse"></div>
@@ -228,7 +233,6 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            {/* Floating Labels (Simpler for Tablet) */}
             <div className="absolute left-[-60px] top-[30%] transition-all duration-500 hidden sm:block lg:hidden" key={`left-tablet-${activeFeatureIndex}`}>
               <div className="bg-white/95 backdrop-blur-xl px-4 py-3 rounded-xl shadow-lg border border-stone-100 flex items-center gap-2">
                 <p className="text-[#2a2826] font-bold text-xs whitespace-nowrap">{features[activeFeatureIndex].left}</p>
@@ -252,32 +256,42 @@ const App: React.FC = () => {
     });
 
     return (
-      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-12 flex flex-col md:flex-row gap-12 bg-white min-h-screen">
-        <aside className="w-full md:w-64 flex-shrink-0 space-y-10">
-          <div className="space-y-4">
-            <h4 className="font-bold text-lg text-[#2a2826]">Sort By</h4>
-            <select 
-              value={sortBy} 
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full p-4 border border-[#e8f3ed] rounded-xl bg-[#fdfcfb] text-sm outline-none focus:border-[#6b7c72] transition-colors"
-            >
-              <option>By Latest</option>
-              <option>Most Popular</option>
-              <option>Name A-Z</option>
-            </select>
-          </div>
+      <div className="max-w-[1200px] mx-auto px-4 py-12 flex flex-col items-center bg-white min-h-screen">
+        
+        {/* FILTERS Button */}
+        <div className="mb-8 w-full flex justify-center">
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 px-8 py-3 bg-white border border-stone-300 rounded-xl text-stone-700 text-sm font-bold tracking-widest uppercase hover:bg-stone-50 transition-all shadow-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filters
+          </button>
+        </div>
 
-          <div className="space-y-6">
-            <h4 className="font-bold text-lg text-[#2a2826]">Themes</h4>
-            <div className="space-y-3">
-              {categories.map((cat) => (
-                <label key={cat} className="flex items-center gap-4 cursor-pointer group">
-                  <div className="relative">
-                    <input 
-                      type="checkbox" 
-                      className="peer sr-only"
-                      checked={selectedCategories.includes(cat)}
-                      onChange={() => {
+        {/* Filter Drawer / Dropdown */}
+        {showFilters && (
+          <div className="w-full max-w-2xl bg-stone-50 p-8 rounded-[2rem] mb-12 border border-stone-100 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <h4 className="font-bold text-sm uppercase tracking-widest text-stone-500">Sort By</h4>
+                <select 
+                  value={sortBy} 
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full p-4 border border-stone-200 rounded-xl bg-white text-sm outline-none focus:border-[#6b7c72] transition-colors"
+                >
+                  <option>By Latest</option>
+                  <option>Most Popular</option>
+                  <option>Name A-Z</option>
+                </select>
+              </div>
+              <div className="space-y-6">
+                <h4 className="font-bold text-sm uppercase tracking-widest text-stone-500">Themes</h4>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((cat) => (
+                    <button 
+                      key={cat} 
+                      onClick={() => {
                         if (cat === 'All') setSelectedCategories(['All']);
                         else {
                           const newCats = selectedCategories.filter(c => c !== 'All');
@@ -289,57 +303,72 @@ const App: React.FC = () => {
                           }
                         }
                       }}
-                    />
-                    <div className="w-6 h-6 border-2 border-[#e8f3ed] rounded-lg peer-checked:bg-[#1a1c18] peer-checked:border-[#1a1c18] transition-all flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white hidden peer-checked:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                  </div>
-                  <span className="text-sm font-medium text-[#6b7c72] group-hover:text-[#2a2826] transition-colors">{cat}</span>
-                </label>
-              ))}
+                      className={`px-4 py-2 rounded-full text-xs font-medium border transition-all ${selectedCategories.includes(cat) ? 'bg-[#1a1c18] text-white border-[#1a1c18]' : 'bg-white text-stone-500 border-stone-200'}`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </aside>
+        )}
 
-        <main className="flex-1 space-y-12">
-          <div className="bg-[#f4f7f5] p-10 rounded-3xl space-y-8 border border-[#e8f3ed] shadow-sm">
-            <h3 className="font-serif text-2xl text-[#2a2826]">Instant Personalization</h3>
-            <div className="flex flex-col sm:flex-row gap-5">
-              <input 
-                type="text" 
-                value={personalizationName}
-                onChange={(e) => setPersonalizationName(e.target.value)}
-                placeholder="Adam & Hawa"
-                className="flex-1 p-5 rounded-2xl border border-[#e8f3ed] bg-white outline-none focus:ring-2 focus:ring-[#e8f3ed] text-[#2a2826] shadow-inner"
-              />
-              <button 
-                onClick={handleSetName}
-                className="bg-[#1a1c18] text-white px-12 py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-[#2a2826] transition-all"
-              >
-                Apply Names
-              </button>
-            </div>
+        {/* Personalization Card */}
+        <div className="w-full max-w-2xl bg-[#f4f7f8] p-10 rounded-[2.5rem] space-y-8 mb-20 text-center">
+          <h3 className="font-bold text-2xl text-[#2a2826] leading-tight max-w-md mx-auto">
+            Set your name(s) for a personalised preview
+          </h3>
+          <div className="space-y-4 max-w-sm mx-auto">
+            <input 
+              type="text" 
+              value={personalizationName}
+              onChange={(e) => setPersonalizationName(e.target.value)}
+              placeholder="Adam & Hawa"
+              className="w-full p-4 rounded-xl border border-stone-200 bg-white outline-none text-center text-stone-400 placeholder-stone-300 font-medium"
+            />
+            <button 
+              onClick={handleSetName}
+              className="w-full bg-white text-[#1a1c18] border border-stone-300 py-4 rounded-xl font-bold text-sm uppercase tracking-[0.2em] hover:bg-stone-50 transition-all shadow-sm"
+            >
+              Set Name
+            </button>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-20">
-            {filteredTemplates.map((tpl) => (
-              <div key={tpl.id} className="group space-y-6 flex flex-col items-center">
-                <div className="relative aspect-[3/4] w-full bg-[#fdfcfb] rounded-[2.5rem] overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-700 flex items-center justify-center p-8 border border-[#e8f3ed]">
-                  <div className="w-full h-full scale-[0.9] transform transition-transform duration-700 group-hover:scale-[0.85]">
-                     <PreviewCanvas data={weddingData} template={tpl} />
+        {/* Grid Layer */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16 w-full">
+          {filteredTemplates.map((tpl) => (
+            <div key={tpl.id} className="flex flex-col items-center group">
+              <div className="relative w-full aspect-square bg-[#f3f6f8] rounded-[2.5rem] flex items-center justify-center p-6 mb-6 transition-all group-hover:bg-[#ebf0f3] overflow-hidden">
+                <div className="w-full h-full scale-[0.6] transform translate-y-4">
+                  <div className="relative w-full h-full bg-white rounded-3xl border-[6px] border-[#1a1c18] shadow-2xl overflow-hidden flex flex-col items-center">
+                    <div className="w-12 h-2 bg-[#1a1c18] rounded-full mt-2 mb-4"></div>
+                    <PreviewCanvas data={weddingData} template={tpl} />
                   </div>
                 </div>
-                
-                <div className="text-center space-y-5">
-                  <h4 className="font-serif text-2xl text-[#2a2826] tracking-wide">{tpl.name}</h4>
-                  <button onClick={() => handleSelectTemplate(tpl)} className="px-10 py-4 bg-[#1a1c18] text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#2a2826] transition-all">
-                    Customize
+              </div>
+              
+              <div className="text-center space-y-4 w-full">
+                <h4 className="font-bold text-xl text-[#2a2826] tracking-wide">{tpl.id}</h4>
+                <button 
+                  onClick={() => handleSelectTemplate(tpl)} 
+                  className="w-full max-w-[120px] mx-auto py-3 border-2 border-stone-800 text-stone-800 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] hover:bg-stone-800 hover:text-white transition-all"
+                >
+                  Try Now
+                </button>
+                <div className="flex justify-center gap-4 text-stone-400 mt-2">
+                  <button className="hover:text-stone-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button className="hover:text-red-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
-        </main>
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
