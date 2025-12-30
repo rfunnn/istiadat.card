@@ -1,7 +1,8 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Fix: Always use direct process.env.API_KEY reference for security and compliance
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateInviteQuote = async (bride: string, groom: string, language: 'en' | 'ms' = 'en'): Promise<string> => {
   try {

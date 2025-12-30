@@ -1,133 +1,141 @@
 
-import { Template, WeddingData } from './types';
+import { TemplateId, EcardData } from './types';
 
-export const TEMPLATES: Template[] = [
+export interface TemplateConfig {
+  id: TemplateId;
+  name: string;
+  primaryColor: string;
+  accentColor: string;
+  bgClass: string;
+  fontClass: string;
+  headerFont: string;
+  thumbnail: string;
+}
+
+export const TEMPLATES: TemplateConfig[] = [
   {
-    id: 'BAB006',
-    name: 'BAB006',
-    thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#ffffff',
-    accentColor: '#fce7f3',
-    textColor: '#2d3436',
-    fontFamily: 'serif',
-    bgPattern: 'none',
-    category: 'Baby',
-    colorHex: '#ffc0cb',
-    likes: 124,
-    views: 1205
+    id: 'classic-gold',
+    name: 'Classic Gold',
+    primaryColor: '#B8860B',
+    accentColor: '#DAA520',
+    bgClass: 'bg-[#FFFDF5]',
+    fontClass: 'text-gray-800',
+    headerFont: 'font-serif',
+    thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600'
   },
   {
-    id: 'VIN049',
-    name: 'VIN049',
-    thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#ffffff',
-    accentColor: '#333333',
-    textColor: '#1a1a1a',
-    fontFamily: 'sans',
-    bgPattern: 'linear-gradient(to bottom, #fff, #f9f9f9)',
-    category: 'Vintage',
-    colorHex: '#d6d3d1',
-    likes: 89,
-    views: 840
+    id: 'floral-pink',
+    name: 'Floral Pink',
+    primaryColor: '#D27685',
+    accentColor: '#E9A178',
+    bgClass: 'bg-[#FDF6F7]',
+    fontClass: 'text-[#5E3B4D]',
+    headerFont: 'font-script',
+    thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600'
   },
   {
-    id: 'WAT035',
-    name: 'WAT035',
-    thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#fdf2f8',
-    accentColor: '#be185d',
-    textColor: '#500724',
-    fontFamily: 'script',
-    bgPattern: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
-    category: 'Watercolor',
-    colorHex: '#fbcfe8',
-    likes: 231,
-    views: 2100
+    id: 'modern-dark',
+    name: 'Modern Dark',
+    primaryColor: '#6366F1',
+    accentColor: '#A5B4FC',
+    bgClass: 'bg-[#0F172A]',
+    fontClass: 'text-gray-100',
+    headerFont: 'font-sans',
+    thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600'
   },
   {
-    id: 'WAT034',
-    name: 'WAT034',
-    thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#1a1a1a',
-    accentColor: '#e5e7eb',
-    textColor: '#ffffff',
-    fontFamily: 'serif',
-    bgPattern: 'linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%)',
-    category: 'Watercolor',
-    colorHex: '#fbbf24',
-    likes: 156,
-    views: 1450
-  },
-  {
-    id: 'FLO122',
-    name: 'FLO122',
-    thumbnail: 'https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#ffffff',
-    accentColor: '#8a9a5b',
-    textColor: '#2d3436',
-    fontFamily: 'serif',
-    bgPattern: 'none',
-    category: 'Floral',
-    colorHex: '#86efac',
-    likes: 312,
-    views: 3200
-  },
-  {
-    id: 'WAT033',
-    name: 'WAT033',
-    thumbnail: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c62?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#fdf2f8',
-    accentColor: '#be185d',
-    textColor: '#500724',
-    fontFamily: 'script',
-    bgPattern: 'none',
-    category: 'Watercolor',
-    colorHex: '#cbd5e1',
-    likes: 98,
-    views: 920
-  },
-  {
-    id: 'WAT032',
-    name: 'WAT032',
-    thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#1a1a1a',
-    accentColor: '#e5e7eb',
-    textColor: '#ffffff',
-    fontFamily: 'serif',
-    bgPattern: 'none',
-    category: 'Watercolor',
-    colorHex: '#1e293b',
-    likes: 45,
-    views: 410
-  },
-  {
-    id: 'WAT031',
-    name: 'WAT031',
-    thumbnail: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&q=80&w=400&h=600',
-    themeColor: '#ffffff',
-    accentColor: '#333333',
-    textColor: '#1a1a1a',
-    fontFamily: 'sans',
-    bgPattern: 'none',
-    category: 'Watercolor',
-    colorHex: '#fcd34d',
-    likes: 212,
-    views: 2500
+    id: 'minimal-light',
+    name: 'Minimalist',
+    primaryColor: '#1F2937',
+    accentColor: '#9CA3AF',
+    bgClass: 'bg-white',
+    fontClass: 'text-slate-900',
+    headerFont: 'font-sans',
+    thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400&h=600'
   }
 ];
 
-export const INITIAL_WEDDING_DATA: WeddingData = {
-  brideName: 'Hawa Binti Ahmad',
-  groomName: 'Adam Bin Ibrahim',
-  brideNick: 'Hawa',
-  groomNick: 'Adam',
-  date: '2026-01-27',
-  time: '11:00 AM - 4:00 PM',
-  venue: 'Laman Wedding Hall',
-  venueAddress: 'Lot 123, Jalan Permai, Kuala Lumpur',
-  fatherName: 'Ibrahim Bin Hassan',
-  motherName: 'Aminah Binti Ismail',
-  quote: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya.',
-  rsvpContact: '+6012-3456789',
-  musicUrl: '',
+export const INITIAL_ECARD_DATA: EcardData = {
+  id: 'preview-123',
+  template: 'classic-gold',
+  config: {
+    language: 'Bahasa Melayu',
+    package: 'Gold',
+    addOns: { ownDesign: false, coverVideo: false },
+    designCode: 'STD-001',
+    opening: { style: 'Envelope', color: '#1a1c18' },
+    animation: { effect: 'Sakura', color: '#ffc0cb' }
+  },
+  jenisMajlis: { text: 'Walimatul Urus', fontSize: 14 },
+  namaPanggilan: { text: 'Adam & Hawa', font: 'Cormorant Garamond', color: '#1a1c18', fontSize: 48 },
+  tarikhMula: '2026-01-27T11:00:00',
+  tarikhAkhir: '2026-01-27T16:00:00',
+  hariTarikh: { text: 'Selasa, 27 Januari 2026', fontSize: 16 },
+  namaTempat: 'Laman Wedding Hall',
+  pembukaUcapan: 'Assalammualaikum W.B.T',
+  bilanganPenganjur: 1,
+  penganjur1: { name: 'Ibrahim Bin Hassan', relation: 'Bapa' },
+  penganjur2: { name: 'Aminah Binti Ismail', relation: 'Ibu' },
+  ayatUcapan: 'Dengan segala hormatnya, kami ingin menjemput Tuan/Puan/Encik/Cik ke majlis perkahwinan putera kami.',
+  namaPenuh: { text: 'Adam Bin Ibrahim & Hawa Binti Ahmad', font: 'Cormorant Garamond', fontSize: 24 },
+  tarikhHijrah: '8 Syaaban 1447H',
+  alamatMajlis: 'Lot 123, Jalan Permai, Kuala Lumpur',
+  googleMapsUrl: 'https://maps.google.com',
+  wazeUrl: 'https://waze.com',
+  gpsCoordinates: '3.1390, 101.6869',
+  maklumatTambahan1: 'Semoga kehadiran anda memeriahkan lagi majlis kami.',
+  aturCaraMajlis: '11:00 AM: Ketibaan Tetamu\n12:30 PM: Kehadiran Pengantin\n1:00 PM: Jamuan Makan\n4:00 PM: Majlis Bersurai',
+  maklumatTambahan2: 'Doa kalian adalah hadiah buat kami.',
+  ui: {
+    commonFont: 'Montserrat',
+    commonSize: 14,
+    commonColor: '#4b5563',
+    headerFont: 'Cormorant Garamond',
+    headerSize: 32,
+    headerColor: '#1a1c18',
+    bgColor: '#ffffff',
+    marginSisi: 2
+  },
+  rsvp: {
+    mode: 'RSVP + Ucapan',
+    note: 'Sila sahkan kehadiran sebelum 15 Januari 2026',
+    closingDate: '2026-01-15',
+    showInputs: ['nama', 'telefon', 'kehadiran'],
+    separateKids: false,
+    limitPerRsvp: 5,
+    totalLimit: 500,
+    hasSlots: false
+  },
+  contacts: [
+    { name: 'Adam', relation: 'Pengantin', phone: '012-3456789', whatsapp: true },
+    { name: 'Hawa', relation: 'Pengantin', phone: '012-9876543', whatsapp: true }
+  ],
+  music: {
+    url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
+    startTime: '0:00',
+    showButton: true,
+    autoplay: true,
+    scrollDelay: 0
+  },
+  gift: {
+    enabled: true,
+    title: 'Salam Kaut / Hadiah',
+    note: 'Sumbangan anda amat kami hargai.',
+    items: [
+      { id: '1', url: '', image: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AdamHawaWedding' }
+    ]
+  },
+  visibility: {
+    tempat: true,
+    tarikh: true,
+    masa: true,
+    masaTamat: true,
+    butangSaveDate: true,
+    aturCara: true,
+    countdown: true,
+    kehadiran: true,
+    ucapan: true,
+    butangSahkan: true,
+    butangTulisUcapan: true
+  }
 };

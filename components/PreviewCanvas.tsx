@@ -1,25 +1,31 @@
 
 import React from 'react';
-import { WeddingData, Template } from '../types';
+import { EcardData } from '../types';
+import { TemplateConfig } from '../constants';
 
 interface PreviewCanvasProps {
-  data: WeddingData;
-  template: Template;
+  data: EcardData;
+  template: TemplateConfig;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({ data, template }) => {
   const getFontClass = () => {
-    switch(template.fontFamily) {
-      case 'serif': return 'font-serif';
-      case 'script': return 'font-script';
-      default: return 'font-sans';
-    }
+    // Fix: Using headerFont from TemplateConfig instead of non-existent fontFamily
+    if (template.headerFont.includes('serif')) return 'font-serif';
+    if (template.headerFont.includes('script')) return 'font-script';
+    return 'font-sans';
   };
+
+  // Fix: Extracting names from EcardData.namaPanggilan.text as it contains combined names
+  const names = (data.namaPanggilan.text || '').split(' & ');
+  const groomNick = names[0] || 'Groom';
+  const brideNick = names[1] || 'Bride';
 
   return (
     <div 
       className="relative w-full h-full overflow-hidden mx-auto bg-white flex flex-col items-center"
-      style={{ color: template.textColor }}
+      // Fix: template.primaryColor is used instead of non-existent textColor
+      style={{ color: template.primaryColor }}
     >
       {/* Decorative Dots - matching the image */}
       <div className="absolute inset-0 pointer-events-none z-0">
@@ -36,24 +42,24 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({ data, template }) 
         
         {/* Header Label */}
         <p className="uppercase tracking-[0.3em] text-[9px] md:text-[10px] mb-12 font-bold text-stone-400 font-sans">
-          WALIMATUL URUS
+          {data.jenisMajlis.text.toUpperCase()}
         </p>
         
         {/* Names Section */}
         <div className={`flex flex-col items-center gap-1 mb-12 text-[#2a2826] ${getFontClass()}`}>
           <h2 className="text-4xl md:text-6xl font-serif tracking-tight leading-none mb-1">
-            {data.groomNick}
+            {groomNick}
           </h2>
           <span className="text-lg md:text-2xl font-serif italic text-stone-300">&</span>
           <h2 className="text-4xl md:text-6xl font-serif tracking-tight leading-none">
-            {data.brideNick}
+            {brideNick}
           </h2>
         </div>
 
         {/* Date Section */}
         <div className="mt-8 border-t border-stone-50 pt-8 w-1/2 flex justify-center">
           <p className="text-[9px] md:text-[10px] tracking-[0.2em] font-bold uppercase text-stone-400 font-sans">
-            SELASA • 27.01.26
+            {data.hariTarikh.text}
           </p>
         </div>
       </div>
