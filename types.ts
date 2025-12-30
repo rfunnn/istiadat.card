@@ -4,7 +4,9 @@ export enum ViewMode {
   GALLERY = 'GALLERY',
   EDITOR = 'EDITOR',
   PREVIEW = 'PREVIEW',
-  PRICING = 'PRICING'
+  PRICING = 'PRICING',
+  MY_COLLECTIONS = 'MY_COLLECTIONS',
+  MY_LIKES = 'MY_LIKES'
 }
 
 export type TemplateId = 'classic-gold' | 'floral-pink' | 'modern-dark' | 'minimal-light';
