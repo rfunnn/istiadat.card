@@ -1,14 +1,3 @@
-
-export enum ViewMode {
-  LANDING = 'LANDING',
-  GALLERY = 'GALLERY',
-  EDITOR = 'EDITOR',
-  PREVIEW = 'PREVIEW',
-  PRICING = 'PRICING',
-  MY_COLLECTIONS = 'MY_COLLECTIONS',
-  MY_LIKES = 'MY_LIKES'
-}
-
 export type TemplateId = 'classic-gold' | 'floral-pink' | 'modern-dark' | 'minimal-light';
 
 export interface GiftItem {
@@ -126,4 +115,14 @@ export interface RSVPResponse {
   guests: number;
   message?: string;
   timestamp: number;
+}
+
+export enum ViewMode {
+  LANDING = 'LANDING',
+  GALLERY = 'GALLERY',
+  EDITOR = 'EDITOR',
+  PREVIEW = 'PREVIEW',
+  PRICING = 'PRICING',
+  MY_COLLECTIONS = 'MY_COLLECTIONS',
+  MY_LIKES = 'MY_LIKES'
 }

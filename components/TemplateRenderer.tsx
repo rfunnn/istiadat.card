@@ -1,9 +1,9 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { EcardData } from '../types';
-import { 
-  MapPin, 
-  Calendar, 
+import {
+  MapPin,
+  Calendar,
+  Clock,
   Navigation,
   ChevronDown,
   Phone,
@@ -24,7 +24,6 @@ interface Props {
   data: EcardData;
   onRSVPSubmit: (rsvp: any) => void;
   previewMode?: boolean;
-  initialShowCover?: boolean;
 }
 
 type ModalType = 'contacts' | 'maps' | 'gift' | 'rsvp' | null;
@@ -33,7 +32,7 @@ const ModalOverlay = ({ title, children, onClose }: { title: string; children?: 
   <div className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end justify-center animate-fade-in">
     <div className="w-full max-w-md bg-white rounded-t-[2.5rem] p-8 pb-12 shadow-2xl animate-slide-up relative">
       <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 opacity-50" />
-      <button 
+      <button
         onClick={onClose}
         className="absolute top-6 right-8 p-2 bg-gray-100 rounded-full text-gray-400 hover:text-black transition-colors"
       >
@@ -47,30 +46,27 @@ const ModalOverlay = ({ title, children, onClose }: { title: string; children?: 
   </div>
 );
 
-const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = false, initialShowCover = true }) => {
+const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = false }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
-  const [showCover, setShowCover] = useState(initialShowCover);
-
+  const [showCover, setShowCover] = useState(true);
   const [guestCount, setGuestCount] = useState(1);
-
-  const [isOpening, setIsOpening] = useState(false);
-  const shouldAnimate = initialShowCover || isOpening;
 
   const getYouTubeEmbedUrl = (url: string) => {
     if (!url) return '';
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     const videoId = (match && match[2].length === 11) ? match[2] : null;
-    
     if (!videoId) return '';
 
     let startSeconds = 0;
     if (data.music.startTime && data.music.startTime.includes(':')) {
-      const [m, s] = data.music.startTime.split(':').map(Number);
-      startSeconds = (m * 60) + (s || 0);
+      const parts = data.music.startTime.split(':').map(Number);
+      if (parts.length === 2) {
+        startSeconds = (parts[0] * 60) + parts[1];
+      }
     }
 
     return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&start=${startSeconds}&controls=0&showinfo=0&rel=0&enablejsapi=1&origin=${window.location.origin}&widget_referrer=${window.location.origin}`;
@@ -94,7 +90,6 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
   }, [data.music.scrollDelay, activeModal, showCover]);
 
   const handleOpenInvitation = () => {
-    setIsOpening(true);
     setShowCover(false);
     if (data.music.autoplay && data.music.url) {
       setIsMusicPlaying(true);
@@ -132,49 +127,42 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
 
   const musicUrl = getYouTubeEmbedUrl(data.music.url);
 
-  // Split name for stacked layout in hero
-  const names = data.namaPanggilan.text.split(' & ');
-
   return (
-    <div className="relative w-full h-full flex flex-col bg-white overflow-hidden shadow-2xl">
-      {/* Opening Cover (Envelope) */}
+    <div className="relative w-full h-full flex flex-col bg-white overflow-hidden">
       {showCover && (
-        <div 
-          className="absolute inset-0 z-[200] flex flex-col items-center justify-center p-8 text-center"
+        <div
+          className="absolute inset-0 z-[200] flex flex-col items-center justify-center p-8 text-center animate-fade-in"
           style={{ backgroundColor: data.ui.bgColor }}
         >
           <div className="space-y-6 max-w-xs animate-fade-in-up">
-             <p className="uppercase tracking-[0.3em] text-[10px] font-bold opacity-60" style={{ color: data.ui.commonColor }}>UNDANGAN MAJLIS</p>
-             <h1 
-               style={{ 
-                 fontFamily: data.namaPanggilan.font, 
-                 fontSize: `${data.namaPanggilan.fontSize}px`,
-                 color: data.namaPanggilan.color 
-               }}
-               className="leading-tight font-serif"
-             >
-               {data.namaPanggilan.text}
-             </h1>
-             
-             <div className="pt-8">
-               <button 
-                 onClick={handleOpenInvitation}
-                 className="group relative flex items-center justify-center gap-3 px-8 py-4 bg-white border border-black/5 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all"
-               >
-                 <Mail className="w-5 h-5 text-gray-400 group-hover:text-black transition-colors" />
-                 <span className="text-sm font-bold tracking-widest uppercase">Buka Undangan</span>
-               </button>
-             </div>
-
-             <div className="pt-12 flex flex-col items-center gap-2 opacity-40">
-               <Heart className="w-4 h-4 animate-pulse" style={{ color: data.ui.commonColor }} />
-               <p className="text-[9px] uppercase tracking-widest" style={{ color: data.ui.commonColor }}>Kepada Tuan/Puan/Encik/Cik</p>
-             </div>
+            <p className="uppercase tracking-[0.3em] text-[10px] font-bold opacity-60" style={{ color: data.ui.commonColor }}>UNDANGAN MAJLIS</p>
+            <h1
+              style={{
+                fontFamily: data.namaPanggilan.font,
+                fontSize: `${data.namaPanggilan.fontSize}px`,
+                color: data.namaPanggilan.color
+              }}
+              className="leading-tight"
+            >
+              {data.namaPanggilan.text}
+            </h1>
+            <div className="pt-8">
+              <button 
+                onClick={handleOpenInvitation}
+                className="group relative flex items-center justify-center gap-3 px-8 py-4 bg-white border border-black/5 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all"
+              >
+                <Mail className="w-5 h-5 text-gray-400 group-hover:text-black transition-colors" />
+                <span className="text-sm font-bold tracking-widest uppercase">Buka Undangan</span>
+              </button>
+            </div>
+            <div className="pt-12 flex flex-col items-center gap-2 opacity-40">
+              <Heart className="w-4 h-4 animate-pulse" style={{ color: data.ui.commonColor }} />
+              <p className="text-[9px] uppercase tracking-widest" style={{ color: data.ui.commonColor }}>Kepada Tuan/Puan/Encik/Cik</p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Music Player Iframe */}
       {isMusicPlaying && musicUrl && (
         <div className="fixed -top-10 -left-10 opacity-0 pointer-events-none">
           <iframe
@@ -188,7 +176,6 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
         </div>
       )}
 
-      {/* Scrollable Main Content */}
       <div 
         ref={scrollRef}
         className={`flex-1 overflow-y-auto no-scrollbar scroll-smooth transition-all duration-500 pb-24 ${showCover ? 'hidden' : 'block'}`}
@@ -197,64 +184,45 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
           ...uiCommonStyle 
         }}
       >
-        {/* Page 2: Hero Section (Muka Depan) */}
-        {(data.visibility.tarikh || data.visibility.masa) && (
-          <section className="h-full min-h-[500px] flex flex-col items-center justify-center p-8 text-center relative">
-            <div className={`z-10 flex flex-col items-center space-y-12 ${shouldAnimate ? 'animate-fade-in-up' : ''}`}>
-              <p 
-                style={{ 
-                  fontFamily: data.ui.headerFont, 
-                  fontSize: `${data.jenisMajlis.fontSize}px`, 
-                  color: data.ui.headerColor 
-                }} 
-                className="uppercase tracking-[0.4em] font-medium opacity-80"
-              >
-                {data.jenisMajlis.text}
-              </p>
+        <section className="min-h-screen flex flex-col items-center justify-center p-8 text-center relative">
+          <div className="z-10 space-y-8 animate-fade-in-up">
+            <p 
+              style={{ 
+                fontFamily: data.ui.headerFont, 
+                fontSize: `${data.jenisMajlis.fontSize}px`, 
+                color: data.ui.headerColor 
+              }} 
+              className="uppercase tracking-[0.3em] font-medium"
+            >
+              {data.jenisMajlis.text}
+            </p>
 
-              <div className="flex flex-col items-center">
-                {names.map((name, i) => (
-                  <React.Fragment key={i}>
-                    <h1 
-                      style={{ 
-                        fontFamily: data.namaPanggilan.font, 
-                        fontSize: `${data.namaPanggilan.fontSize}px`, 
-                        color: data.namaPanggilan.color 
-                      }} 
-                      className="leading-tight font-serif"
-                    >
-                      {name}
-                    </h1>
-                    {i < names.length - 1 && (
-                      <span className="text-3xl font-serif italic my-1 opacity-30" style={{ color: data.namaPanggilan.color }}>&</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
+            <h1 
+              style={{ 
+                fontFamily: data.namaPanggilan.font, 
+                fontSize: `${data.namaPanggilan.fontSize}px`, 
+                color: data.namaPanggilan.color 
+              }} 
+              className="leading-tight py-4"
+            >
+              {data.namaPanggilan.text}
+            </h1>
 
-              <div className="space-y-4 opacity-60" style={uiCommonStyle}>
-                {data.visibility.tarikh && (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center justify-center gap-2">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span style={{ fontSize: `${data.hariTarikh.fontSize}px` }} className="font-medium tracking-wide">
-                        {data.hariTarikh.text}
-                      </span>
-                    </div>
-                    {data.tarikhHijrah && <p className="text-[11px] italic tracking-widest">{data.tarikhHijrah}</p>}
-                  </div>
-                )}
-              </div>
+            <div className="space-y-2 opacity-80" style={uiCommonStyle}>
+              {data.visibility.tarikh && (
+                <div className="flex items-center justify-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span style={{ fontSize: `${data.hariTarikh.fontSize}px` }}>
+                    {data.hariTarikh.text}
+                  </span>
+                </div>
+              )}
+              {data.tarikhHijrah && <p className="text-sm italic">{data.tarikhHijrah}</p>}
             </div>
-            {!showCover && (
-              <div className={`absolute bottom-10 opacity-10 ${shouldAnimate ? 'animate-bounce' : ''}`}>
-                <ChevronDown className="w-5 h-5" />
-              </div>
-            )}
-          </section>
-        )}
+          </div>
+          <div className="absolute bottom-12 animate-bounce opacity-20"><ChevronDown className="w-6 h-6" /></div>
+        </section>
 
-        {/* Page 3: Invitation Content (Ayat Undangan) */}
         <section className="py-20 text-center" style={sectionStyle}>
           <div className="py-12 px-6 bg-white/40 backdrop-blur-md rounded-[2.5rem] shadow-sm border border-black/5">
             <h3 
@@ -288,7 +256,6 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
           </div>
         </section>
 
-        {/* Page 4: Address Display (Tempat & Navigasi) */}
         {data.visibility.tempat && (
           <section className="py-20 text-center" style={sectionStyle}>
             <div className="mb-10">
@@ -309,7 +276,6 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
           </section>
         )}
 
-        {/* Page 5: Jadual Majlis & Prayer (Atur Cara) */}
         {data.visibility.aturCara && (
           <section className="py-10 px-6 flex flex-col items-center" style={sectionStyle}>
             <div className="w-full max-w-sm bg-gray-50/50 backdrop-blur-sm rounded-[3rem] p-10 flex flex-col items-center text-center space-y-8 shadow-sm">
@@ -333,7 +299,7 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
                 Sumbangan & Doa
               </h3>
                <GiftIcon className="w-8 h-8 opacity-30 mb-6" style={{ color: data.ui.headerColor }} />
-               <div style={{ ...uiCommonStyle, lineHeight: '1.8' }} className="italic px-4 opacity-80 text-sm">
+               <div style={{ ...uiCommonStyle, lineHeight: '1.8' }} className="italic px-4 opacity-80">
                  {data.maklumatTambahan2}
                </div>
             </div>
@@ -341,16 +307,14 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
         )}
 
         <footer className="py-20 text-center opacity-30 text-[10px] tracking-widest uppercase pb-32">
-          <p>Powered by istiadat.card</p>
+          <p>Powered by E-Card Studio Pro</p>
         </footer>
       </div>
 
-      {/* FIXED FOOTER MENU */}
       <div className={`absolute bottom-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-lg border-t border-black/5 flex items-center justify-around px-4 z-[90] transition-transform duration-500 ${showCover ? 'translate-y-full' : 'translate-y-0'}`}>
         <button onClick={() => setActiveModal('contacts')} className="p-3 text-gray-400 hover:text-black transition-all active:scale-90">
           <Phone className="w-5 h-5 stroke-[2px]" />
         </button>
-        
         <button 
           onClick={() => setIsMusicPlaying(!isMusicPlaying)} 
           disabled={!data.music.url}
@@ -358,22 +322,18 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
         >
           {isMusicPlaying ? <Volume2 className="w-5 h-5 stroke-[2px] animate-pulse" /> : <VolumeX className="w-5 h-5 stroke-[2px]" />}
         </button>
-
         <button onClick={() => setActiveModal('maps')} className="p-3 text-gray-400 hover:text-black transition-all active:scale-90">
           <MapPin className="w-5 h-5 stroke-[2px]" />
         </button>
-        
         <button onClick={() => setActiveModal('gift')} className={`p-3 transition-all active:scale-90 ${data.gift.enabled ? 'text-gray-400 hover:text-black' : 'text-gray-100'}`} disabled={!data.gift.enabled}>
           <GiftIcon className="w-5 h-5 stroke-[2px]" />
         </button>
-        
         <button onClick={() => setActiveModal('rsvp')} className="p-3 text-gray-400 hover:text-black transition-all active:scale-90 relative">
           <Mail className="w-5 h-5 stroke-[2px]" />
           <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[7px] font-bold mt-[2px] opacity-70">RSVP</span>
         </button>
       </div>
 
-      {/* MODALS */}
       {activeModal === 'contacts' && (
         <ModalOverlay title="Hubungi Kami" onClose={() => setActiveModal(null)}>
           <div className="space-y-6">
@@ -424,15 +384,13 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
                 "{data.gift.note}"
               </p>
             )}
-            
             <div className="grid grid-cols-1 gap-4">
               {data.gift.items.map((item, index) => (
-                <div key={item.id} className="bg-gray-50 rounded-[2rem] p-6 border border-gray-100 flex flex-col items-center space-y-5" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div key={item.id} className="bg-gray-50 rounded-[2rem] p-6 border border-gray-100 flex flex-col items-center space-y-5 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                   <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-1">
                     <GiftIcon className="w-3 h-3" />
                     <span>Sumbangan #{index + 1}</span>
                   </div>
-
                   {item.image && (
                     <div className="relative w-full max-w-[180px] group">
                       <div className="absolute inset-0 bg-black/5 rounded-2xl -rotate-2 group-hover:rotate-0 transition-transform"></div>
@@ -445,7 +403,6 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
                       </div>
                     </div>
                   )}
-
                   {item.url && (
                     <div className="w-full space-y-2">
                       <a 
@@ -501,18 +458,9 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
       )}
 
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes slide-up {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .animate-fade-in { animation: fade-in 0.3s ease-out; }
         .animate-fade-in-up { animation: fade-in-up 0.8s ease-out; }
