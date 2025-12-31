@@ -21,7 +21,14 @@ import {
   PenTool,
   Share2,
   X,
-  ArrowLeft
+  ArrowLeft,
+  Mail,
+  ChevronDown,
+  Phone,
+  VolumeX,
+  MapPin,
+  Gift,
+  Calendar
 } from 'lucide-react';
 
 const INITIAL_STUDIO_DATA: EcardData = {
@@ -56,10 +63,10 @@ const INITIAL_STUDIO_DATA: EcardData = {
   aturCaraMajlis: 'Kehadiran Tetamu: 11:00 pagi\nKetibaan Pengantin: 12:15 tengah hari\nMakan Beradab: 1:00 petang\nMajlis Berakhir: 4:00 petang',
   maklumatTambahan2: 'Ya Allah Ya Rahman Ya Rahim, berkatilah majlis perkahwinan ini...',
   ui: {
-    commonFont: 'Spartan',
+    commonFont: 'Montserrat',
     commonSize: 13,
     commonColor: '#a25d66',
-    headerFont: 'Spartan',
+    headerFont: 'Montserrat',
     headerSize: 39,
     headerColor: '#a25d66',
     bgColor: '#f1f1f1',
@@ -109,6 +116,77 @@ const INITIAL_STUDIO_DATA: EcardData = {
   }
 };
 
+const STATIC_LANDING_DATA: EcardData = {
+  ...INITIAL_STUDIO_DATA,
+  id: 'static-landing-preview',
+  jenisMajlis: { text: 'WALIMATUL\nURUS', fontSize: 13 },
+  namaPanggilan: { text: 'Adam & Hawa', font: 'Cormorant Garamond', color: '#1a1c18', fontSize: 48 },
+  hariTarikh: { text: 'Selasa, 27 Januari\n2026', fontSize: 16 },
+  tarikhHijrah: '8 Syaaban 1447H',
+};
+
+// Component that exactly mimics the requested image for the landing page
+const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1 }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number }) => (
+  <div 
+    className={`relative w-[300px] h-[650px] bg-white rounded-[3.5rem] p-2.5 shadow-2xl border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
+    style={{ transform: `scale(${scale}) rotate(${tilted}deg)`, borderColor: borderColor, opacity: opacity }}
+  >
+    {/* Dynamic Island Notch */}
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#1A1A1A] rounded-full z-50"></div>
+    
+    <div className="flex-1 bg-white rounded-[2.5rem] overflow-hidden relative pt-20 flex flex-col items-center">
+      {/* Background Subtle Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[25%] left-[65%] w-1.5 h-1.5 bg-stone-100 rounded-full"></div>
+        <div className="absolute top-[35%] left-[25%] w-1.5 h-1.5 bg-stone-50 rounded-full"></div>
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center text-center px-8 w-full">
+        {/* Type of Event */}
+        <p className="text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-16 leading-relaxed">
+          WALIMATUL<br/>URUS
+        </p>
+
+        {/* Names */}
+        <div className="flex flex-col items-center gap-1 mb-20">
+          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">Adam</h2>
+          <span className="text-2xl font-serif italic text-stone-200 py-1">&</span>
+          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">Hawa</h2>
+        </div>
+
+        {/* Date Section */}
+        <div className="space-y-2 flex flex-col items-center mt-4">
+          <div className="flex items-center gap-3 text-stone-400">
+            <Calendar className="w-3.5 h-3.5" />
+            <div className="flex flex-col items-start leading-none">
+               <span className="text-sm font-medium tracking-wide">Selasa, 27 Januari</span>
+               <span className="text-sm font-medium tracking-wide">2026</span>
+            </div>
+          </div>
+          <p className="text-[10px] italic text-stone-300 font-medium pt-1 tracking-wider">8 Syaaban 1447H</p>
+        </div>
+
+        {/* Floating Indicator */}
+        <div className="mt-12 opacity-20">
+          <ChevronDown className="w-5 h-5" strokeWidth={1.5} />
+        </div>
+      </div>
+
+      {/* Landing Style Navigation Pill */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-14 bg-stone-50/80 backdrop-blur-md rounded-2xl flex items-center justify-around px-4 border border-white/40 shadow-sm">
+        <Phone className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+        <VolumeX className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+        <MapPin className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+        <Gift className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+        <div className="relative">
+          <Mail className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[6px] font-black text-stone-300">RSVP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const App: React.FC = () => {
   const [view, setView] = useState<ViewMode>(ViewMode.LANDING);
   const [ecardData, setEcardData] = useState<EcardData>(() => {
@@ -120,8 +198,22 @@ const App: React.FC = () => {
   const [occasionIndex, setOccasionIndex] = useState(0);
   const [galleryFilter, setGalleryFilter] = useState('All');
   const [likedTemplates, setLikedTemplates] = useState<Set<string>>(new Set());
+  const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
 
   const occasions = ['wedding', 'business', 'aqiqah', 'tahlil', 'birthday', 'open house'];
+
+  const features = [
+    { label: 'Contacts', left: 'WhatsApp', right: 'Phone Call' },
+    { label: 'Calendar', left: 'Google Cal', right: 'iCloud' },
+    { label: 'Navigation', left: 'Google Maps', right: 'Waze' },
+    { label: 'Countdown', left: 'Live Timer', right: 'Save Date' },
+    { label: 'RSVP/Wishes', left: 'Guestbook', right: 'Send RSVP' },
+    { label: 'Animated Effect', left: 'Sakura', right: 'Snowfall' },
+    { label: 'Song', left: 'Pause/Play', right: 'Volume' },
+    { label: 'Gallery', left: 'Fullscreen', right: 'Download' },
+    { label: 'Wishlist', left: 'Registry', right: 'Contribute' },
+    { label: 'Money Gift', left: 'QR Pay', right: 'Bank Info' }
+  ];
 
   useEffect(() => {
     localStorage.setItem('ecard_data_v4', JSON.stringify(ecardData));
@@ -158,6 +250,8 @@ const App: React.FC = () => {
         <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#e8f3ed] rounded-full blur-[140px]"></div>
         <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
+      
+      {/* Hero Section */}
       <section className="relative flex items-start px-6 md:px-12 lg:px-24 pt-4 md:pt-10 pb-12 md:pb-32">
         <div className="relative z-20 w-full grid lg:grid-cols-12 gap-8 lg:gap-8 items-start max-w-7xl mx-auto">
           <div className="lg:col-span-6 relative z-30 flex flex-col items-center lg:items-start space-y-4 md:space-y-6 text-center lg:text-left pt-6 lg:pt-12">
@@ -182,6 +276,54 @@ const App: React.FC = () => {
               <button onClick={() => setView(ViewMode.GALLERY)} className="lg:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95 cursor-pointer">
                 Try Now For Free
               </button>
+            </div>
+          </div>
+          <div className="lg:col-span-6 relative flex flex-col items-center justify-center z-10 pt-4 lg:pt-0">
+            <div className="relative w-full h-[450px] md:h-[650px] lg:h-[750px] flex items-center justify-center">
+               {/* Background phone exactly following image reference */}
+               <div className="absolute left-[0%] md:left-[5%] top-[10%]">
+                  <LandingPhoneMockup scale={0.85} tilted={-8} borderColor="#F0F0F0" opacity={0.3} className="blur-[1px]" />
+               </div>
+               {/* Main phone exactly following image reference */}
+               <div className="relative z-10 right-[-15%] md:right-[-20%] top-[0%]">
+                  <LandingPhoneMockup scale={1} tilted={2} borderColor="#1A1A1A" />
+               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="relative py-24 md:py-32 bg-[#f4f9f7] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <div className="inline-block mb-8 px-10 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-stone-500">Platform Highlights</span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-serif text-[#2a2826] mb-16 tracking-tight">Core Features</h2>
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-20 max-w-4xl mx-auto">
+            {features.map((feature, i) => (
+              <button key={i} onClick={() => setActiveFeatureIndex(i)} className={`px-6 md:px-8 py-3.5 md:py-4 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] border transition-all duration-300 shadow-sm ${activeFeatureIndex === i ? 'bg-[#1a1c18] text-white border-[#1a1c18] shadow-xl' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}>
+                {feature.label}
+              </button>
+            ))}
+          </div>
+          <div className="relative inline-block">
+            <div className="relative z-10 mx-auto">
+               <LandingPhoneMockup scale={1} borderColor="#1A1A1A" />
+            </div>
+            {/* Left label */}
+            <div className="absolute left-[-80px] md:left-[-160px] lg:left-[-180px] top-[25%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
+                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#6b7c72] animate-pulse"></div>
+                <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
+              </div>
+            </div>
+            {/* Right label */}
+            <div className="absolute right-[-80px] md:right-[-160px] lg:right-[-180px] top-[65%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
+                <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
+                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#d4af37] animate-pulse"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -232,12 +374,35 @@ const App: React.FC = () => {
                   <img src={tpl.thumbnail} alt={tpl.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out" />
                   <div className="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-4 p-10">
                     <button 
-                      onClick={() => { setEcardData({...ecardData, template: tpl.id as TemplateId}); setView(ViewMode.EDITOR); }} 
+                      onClick={() => { 
+                        setEcardData({
+                          ...INITIAL_STUDIO_DATA, 
+                          template: tpl.id as TemplateId,
+                          id: 'ecard-' + Math.random().toString(36).substr(2, 9)
+                        }); 
+                        setView(ViewMode.EDITOR); 
+                      }} 
                       className="w-full py-5 bg-white text-stone-900 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] shadow-2xl hover:bg-stone-50 transition-all transform hover:scale-105 active:scale-95"
                     >
                       Personalize
                     </button>
+                    <button className="w-full py-5 bg-white/10 backdrop-blur-xl text-white border border-white/20 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white/20 transition-all active:scale-95">
+                      Live Preview
+                    </button>
                   </div>
+                </div>
+                <div className="p-8 flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-[#1a1c18] text-base tracking-tight">{tpl.name}</h4>
+                    <p className="text-[9px] text-stone-400 uppercase tracking-[0.3em] font-black">Signature Collection</p>
+                  </div>
+                  <button onClick={() => {
+                    const next = new Set(likedTemplates);
+                    if (next.has(tpl.id)) next.delete(tpl.id); else next.add(tpl.id);
+                    setLikedTemplates(next);
+                  }} className={`p-3 rounded-full transition-all duration-300 ${likedTemplates.has(tpl.id) ? 'bg-rose-50 text-rose-500 scale-110 shadow-sm' : 'bg-stone-50 text-stone-300 hover:text-stone-400'}`}>
+                    <Heart className={`w-4 h-4 ${likedTemplates.has(tpl.id) ? 'fill-current' : ''}`} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -247,18 +412,102 @@ const App: React.FC = () => {
     );
   };
 
-  const renderPricing = () => (
-    <div className="min-h-screen bg-[#fdfcfb] py-24 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto space-y-20">
-        <div className="text-center space-y-6">
-          <h2 className="text-4xl md:text-7xl font-serif text-[#1a1c18] tracking-tight">The Collection Tiers</h2>
-          <p className="text-stone-500 max-w-2xl mx-auto font-serif italic text-xl leading-relaxed">
-            Transparent investment for your most precious memories. Select the experience that best suits your vision.
-          </p>
+  const renderPricing = () => {
+    const plans = [
+      { 
+        name: 'Bronze', 
+        price: 'RM30', 
+        color: 'bg-white', 
+        textColor: 'text-stone-500', 
+        features: ['Standard Template Access', 'Basic Map Integration', 'Custom Text Content', '7 Days Online Hosting', 'Mobile Optimization'], 
+        btn: 'Select Bronze',
+        icon: Layout
+      },
+      { 
+        name: 'Silver', 
+        price: 'RM40', 
+        color: 'bg-white', 
+        textColor: 'text-stone-900', 
+        features: ['Premium Template Access', 'Animated Sakura/Snow Effects', 'Music Integration (YouTube)', 'Countdown Timer', '30 Days Online Hosting', 'Guest Management'], 
+        highlight: true, 
+        btn: 'Get Silver',
+        icon: Sparkles
+      },
+      { 
+        name: 'Gold', 
+        price: 'RM60', 
+        color: 'bg-stone-900', 
+        textColor: 'text-white', 
+        features: ['Elite Collection Access', 'Background Video Covers', 'Music & Auto Scroll', 'Digital Gift / QR Payments', 'Guest Wishbook & RSVP', 'Lifetime Hosting', 'VIP Support'], 
+        btn: 'Select Gold',
+        icon: Star
+      }
+    ];
+    return (
+      <div className="min-h-screen bg-[#fdfcfb] py-24 px-6 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto space-y-20">
+          <div className="text-center space-y-6">
+            <h2 className="text-4xl md:text-7xl font-serif text-[#1a1c18] tracking-tight">The Collection Tiers</h2>
+            <p className="text-stone-500 max-w-2xl mx-auto font-serif italic text-xl leading-relaxed">
+              Transparent investment for your most precious memories. Select the experience that best suits your vision.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
+            {plans.map((plan, i) => (
+              <div key={i} className={`relative p-12 rounded-[3.5rem] flex flex-col justify-between transition-all duration-700 ${plan.color} ${plan.highlight ? 'shadow-[0_60px_100px_-30px_rgba(0,0,0,0.1)] ring-1 ring-stone-100 scale-105 z-10' : 'shadow-sm border border-stone-100 hover:shadow-xl'}`}>
+                {plan.highlight && <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-stone-900 text-white px-8 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl">Recommended</div>}
+                
+                <div className="space-y-10">
+                  <div className="space-y-4">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${plan.name === 'Gold' ? 'bg-white/10 text-amber-400' : 'bg-stone-50 text-stone-400'}`}>
+                       <plan.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className={`text-2xl font-bold uppercase tracking-widest ${plan.textColor}`}>{plan.name}</h3>
+                    <div className="flex items-baseline gap-2">
+                      <span className={`text-5xl md:text-6xl font-serif ${plan.textColor}`}>{plan.price}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-widest opacity-40 ${plan.textColor}`}>Flat Fee</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full h-px bg-stone-100/50"></div>
+
+                  <ul className="space-y-6">
+                    {plan.features.map((feat, idx) => (
+                      <li key={idx} className="flex items-start gap-4">
+                        <div className={`mt-1.5 w-4 h-4 rounded-full flex items-center justify-center ${plan.highlight ? 'bg-stone-900 text-white' : (plan.name === 'Gold' ? 'bg-amber-400 text-stone-900' : 'bg-stone-100 text-stone-400')}`}>
+                          <Check className="w-2.5 h-2.5" strokeWidth={3} />
+                        </div>
+                        <span className={`text-sm leading-snug font-medium ${plan.textColor === 'text-white' ? 'opacity-70' : 'text-stone-600'}`}>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="pt-12">
+                  <button 
+                    onClick={() => { setView(ViewMode.GALLERY); }} 
+                    className={`w-full py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${plan.name === 'Gold' ? 'bg-white text-stone-900 hover:bg-stone-50' : 'bg-stone-900 text-white hover:bg-stone-800'}`}
+                  >
+                    {plan.btn}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-16 text-center">
+            <div className="inline-flex items-center gap-4 p-1 pr-6 bg-stone-50 rounded-full border border-stone-100">
+               <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                 <Check className="w-4 h-4 text-green-500" />
+               </div>
+               <p className="text-[10px] font-black text-stone-500 uppercase tracking-[0.3em]">Secure Payment via Stripe & FPX • Instant Activation</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderEditor = () => {
     if (isPreview) {
@@ -338,6 +587,10 @@ const App: React.FC = () => {
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-[#1a1c18] rounded-2xl flex items-center justify-center text-white font-serif text-2xl shadow-lg">I</div>
             <h1 className="text-2xl font-bold tracking-tight text-[#1a1c18]">istiadat<span className="text-[#6b7c72] font-light">.card</span></h1>
+          </div>
+          <div className="flex gap-12 text-[11px] font-bold uppercase tracking-[0.4em] text-[#6b7c72]">
+            <button onClick={() => setView(ViewMode.GALLERY)} className="hover:text-stone-900 transition-colors">Templates</button>
+            <button onClick={() => setView(ViewMode.PRICING)} className="hover:text-stone-900 transition-colors">Pricing</button>
           </div>
         </div>
       </footer>
