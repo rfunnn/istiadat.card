@@ -202,6 +202,13 @@ const Editor: React.FC<Props> = ({ data, onChange, onPreview }) => {
     );
   };
 
+  const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -563,10 +570,7 @@ const Editor: React.FC<Props> = ({ data, onChange, onPreview }) => {
         {currentPage === 7 && (
           <div className="space-y-6">
             <PageHeader title="EDIT CARD" subtitle="Hubungi" />
-            <div className="text-gray-500 text-[13px] leading-tight mb-4">
-              <p className="font-medium text-gray-800">Isi sehingga 7 kenalan</p>
-              <p className="italic">Kosongkan jika tidak memerlukan</p>
-            </div>
+            <div className="text-gray-500 text-[13px] font-medium text-gray-800">Isi sehingga 7 kenalan</div>
             <div className="space-y-6">
               {data.contacts.map((contact, index) => (
                 <div key={index} className="space-y-3 pb-6 border-b border-gray-100 last:border-0 relative">
@@ -629,6 +633,33 @@ const Editor: React.FC<Props> = ({ data, onChange, onPreview }) => {
             <div className="pt-6 border-t border-gray-100">
               <Label>Delay Auto Skrol (saat)</Label>
               <Slider value={data.music.scrollDelay} min={0} max={10} onChange={(v: any) => updateField('music.scrollDelay', v)} unit="s" />
+            </div>
+
+            {/* PREVIEW BLOCK - Robustly handle YouTube thumbnails */}
+            <div className="pt-4 border-t border-gray-100 animate-fade-in">
+               <Label>Previu Media Kad Digital</Label>
+               <div className="w-full max-w-sm mx-auto aspect-video rounded-3xl overflow-hidden bg-black shadow-2xl relative group ring-4 ring-gray-50">
+                  {getYoutubeId(data.music.url) ? (
+                     <>
+                       <img 
+                        src={`https://img.youtube.com/vi/${getYoutubeId(data.music.url)}/hqdefault.jpg`} 
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" 
+                        alt="Video preview"
+                       />
+                       <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4">
+                          <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform mb-4">
+                             <Play className="w-8 h-8 fill-white" />
+                          </div>
+                          <span className="text-[11px] font-bold tracking-widest uppercase opacity-80">Pautan Video Aktif</span>
+                       </div>
+                     </>
+                  ) : (
+                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-3 bg-gray-50">
+                        <Play className="w-10 h-10 opacity-20" />
+                        <span className="text-[10px] font-bold tracking-tighter opacity-50">PAUTAN VIDEO KOSONG</span>
+                     </div>
+                  )}
+               </div>
             </div>
           </div>
         )}

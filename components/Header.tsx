@@ -1,7 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ViewMode } from '../types';
-import { User, LogOut, Library, ChevronDown, UserCircle, Heart } from 'lucide-react';
+import { User, LogOut, Library, ChevronDown, UserCircle, Heart, ClipboardList } from 'lucide-react';
 
 interface HeaderProps {
   setView: (view: ViewMode) => void;
@@ -85,11 +84,11 @@ export const Header: React.FC<HeaderProps> = ({ setView, currentView }) => {
                 </div>
                 <div className="p-2">
                   <button 
-                    onClick={() => handleNav(ViewMode.MY_COLLECTIONS)}
+                    onClick={() => handleNav(ViewMode.MY_ORDERS)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-stone-600 hover:bg-stone-50 rounded-xl transition-colors text-left"
                   >
-                    <Library className="w-4 h-4" />
-                    <span className="text-xs font-bold uppercase tracking-widest">My Collections</span>
+                    <ClipboardList className="w-4 h-4" />
+                    <span className="text-xs font-bold uppercase tracking-widest">My Orders</span>
                   </button>
                   <button 
                     onClick={() => handleNav(ViewMode.MY_LIKES)}
@@ -148,10 +147,10 @@ export const Header: React.FC<HeaderProps> = ({ setView, currentView }) => {
               </button>
             ))}
             <button 
-              onClick={() => handleNav(ViewMode.MY_COLLECTIONS)}
-              className={`flex items-center gap-3 text-left text-sm font-bold uppercase tracking-widest ${currentView === ViewMode.MY_COLLECTIONS ? 'text-amber-600' : 'text-stone-500'}`}
+              onClick={() => handleNav(ViewMode.MY_ORDERS)}
+              className={`flex items-center gap-3 text-left text-sm font-bold uppercase tracking-widest ${currentView === ViewMode.MY_ORDERS ? 'text-amber-600' : 'text-stone-500'}`}
             >
-              <Library className="w-4 h-4" /> My Collections
+              <ClipboardList className="w-4 h-4" /> My Orders
             </button>
             <button 
               onClick={() => handleNav(ViewMode.MY_LIKES)}

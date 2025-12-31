@@ -28,7 +28,16 @@ import {
   VolumeX,
   MapPin,
   Gift,
-  Calendar
+  Calendar,
+  MoreVertical,
+  Edit3,
+  Image as ImageIcon,
+  Eye,
+  MessageSquare,
+  Copy,
+  Plus,
+  HelpCircle,
+  ClipboardList
 } from 'lucide-react';
 
 const INITIAL_STUDIO_DATA: EcardData = {
@@ -126,7 +135,7 @@ const STATIC_LANDING_DATA: EcardData = {
 };
 
 // Component that exactly mimics the requested image for the landing page
-const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1 }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number }) => (
+const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1, data = STATIC_LANDING_DATA }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number, data?: EcardData }) => (
   <div 
     className={`relative w-[300px] h-[650px] bg-white rounded-[3.5rem] p-2.5 shadow-2xl border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
     style={{ transform: `scale(${scale}) rotate(${tilted}deg)`, borderColor: borderColor, opacity: opacity }}
@@ -144,14 +153,18 @@ const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor
       <div className="relative z-10 flex flex-col items-center text-center px-8 w-full">
         {/* Type of Event */}
         <p className="text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-16 leading-relaxed">
-          WALIMATUL<br/>URUS
+          {data?.jenisMajlis?.text || 'WALIMATUL\nURUS'}
         </p>
 
         {/* Names */}
         <div className="flex flex-col items-center gap-1 mb-20">
-          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">Adam</h2>
+          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+            {data?.namaPanggilan?.text.split('&')[0].trim() || 'Adam'}
+          </h2>
           <span className="text-2xl font-serif italic text-stone-200 py-1">&</span>
-          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">Hawa</h2>
+          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+            {data?.namaPanggilan?.text.split('&')[1]?.trim() || 'Hawa'}
+          </h2>
         </div>
 
         {/* Date Section */}
@@ -159,11 +172,11 @@ const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor
           <div className="flex items-center gap-3 text-stone-400">
             <Calendar className="w-3.5 h-3.5" />
             <div className="flex flex-col items-start leading-none">
-               <span className="text-sm font-medium tracking-wide">Selasa, 27 Januari</span>
-               <span className="text-sm font-medium tracking-wide">2026</span>
+               <span className="text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[0] || 'Selasa, 27 Januari'}</span>
+               <span className="text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[1] || '2026'}</span>
             </div>
           </div>
-          <p className="text-[10px] italic text-stone-300 font-medium pt-1 tracking-wider">8 Syaaban 1447H</p>
+          <p className="text-[10px] italic text-stone-300 font-medium pt-1 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
         </div>
 
         {/* Floating Indicator */}
@@ -193,6 +206,32 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('ecard_data_v4');
     return saved ? JSON.parse(saved) : INITIAL_STUDIO_DATA;
   });
+  
+  // Deployment URL
+  const DEPLOY_URL = "istiadat-card.vercel.app";
+
+  // Simulated collection of saved cards
+  const [collections, setCollections] = useState<EcardData[]>(() => {
+    const saved = localStorage.getItem('ecard_collections_v1');
+    return saved ? JSON.parse(saved) : [
+      {
+        ...INITIAL_STUDIO_DATA,
+        id: '40264',
+        jenisMajlis: { text: 'Majlis Hari Jadi', fontSize: 13 },
+        namaPanggilan: { text: 'asdas & ', font: 'Dancing Script', color: '#a25d66', fontSize: 50 },
+        tarikhMula: '2025-12-29T10:00',
+        config: { ...INITIAL_STUDIO_DATA.config, designCode: 'BAB006' }
+      },
+      {
+        ...INITIAL_STUDIO_DATA,
+        id: '10907',
+        namaPanggilan: { text: 'Arfan & Rafeka', font: 'Dancing Script', color: '#24104f', fontSize: 50 },
+        tarikhMula: '2024-08-24T01:17',
+        config: { ...INITIAL_STUDIO_DATA.config, designCode: 'FLO085' }
+      }
+    ];
+  });
+
   const [isEditorOpen, setIsEditorOpen] = useState(true);
   const [isPreview, setIsPreview] = useState(false);
   const [occasionIndex, setOccasionIndex] = useState(0);
@@ -218,6 +257,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('ecard_data_v4', JSON.stringify(ecardData));
   }, [ecardData]);
+
+  useEffect(() => {
+    localStorage.setItem('ecard_collections_v1', JSON.stringify(collections));
+  }, [collections]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -420,7 +463,6 @@ const App: React.FC = () => {
         color: 'bg-white', 
         textColor: 'text-stone-500', 
         features: ['Standard Template Access', 'Basic Map Integration', 'Custom Text Content', '7 Days Online Hosting', 'Mobile Optimization'], 
-        btn: 'Select Bronze',
         icon: Layout
       },
       { 
@@ -430,7 +472,6 @@ const App: React.FC = () => {
         textColor: 'text-stone-900', 
         features: ['Premium Template Access', 'Animated Sakura/Snow Effects', 'Music Integration (YouTube)', 'Countdown Timer', '30 Days Online Hosting', 'Guest Management'], 
         highlight: true, 
-        btn: 'Get Silver',
         icon: Sparkles
       },
       { 
@@ -439,7 +480,6 @@ const App: React.FC = () => {
         color: 'bg-stone-900', 
         textColor: 'text-white', 
         features: ['Elite Collection Access', 'Background Video Covers', 'Music & Auto Scroll', 'Digital Gift / QR Payments', 'Guest Wishbook & RSVP', 'Lifetime Hosting', 'VIP Support'], 
-        btn: 'Select Gold',
         icon: Star
       }
     ];
@@ -483,15 +523,6 @@ const App: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-
-                <div className="pt-12">
-                  <button 
-                    onClick={() => { setView(ViewMode.GALLERY); }} 
-                    className={`w-full py-5 rounded-2xl font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${plan.name === 'Gold' ? 'bg-white text-stone-900 hover:bg-stone-50' : 'bg-stone-900 text-white hover:bg-stone-800'}`}
-                  >
-                    {plan.btn}
-                  </button>
-                </div>
               </div>
             ))}
           </div>
@@ -508,6 +539,127 @@ const App: React.FC = () => {
       </div>
     );
   };
+
+  const renderMyOrders = () => (
+    <div className="min-h-screen bg-white py-12 px-6 md:px-12 lg:px-24">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex justify-between items-center mb-12 border-b border-stone-100 pb-8">
+          <h2 className="text-[24px] font-black uppercase tracking-tight text-gray-900">Orders</h2>
+          <button 
+            onClick={() => {
+              setEcardData(INITIAL_STUDIO_DATA);
+              setView(ViewMode.GALLERY);
+            }}
+            className="px-6 py-2.5 bg-white border border-stone-900 rounded-lg text-[11px] font-bold uppercase tracking-widest hover:bg-stone-50 transition-colors shadow-sm"
+          >
+            Create New Card
+          </button>
+        </div>
+
+        <div className="space-y-16">
+          {collections.map((item, idx) => {
+             const cardLink = `${DEPLOY_URL}/${item.id}/${item.namaPanggilan.text.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-')}`;
+             return (
+              <div key={item.id} className="relative group">
+                <div className="grid md:grid-cols-[160px_1fr] gap-8 md:gap-16 items-start">
+                  {/* Mockup Display - Exactly as requested */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="relative w-[140px] h-[240px] bg-white rounded-[2.2rem] border-[8px] border-[#1A1A1A] overflow-hidden shadow-2xl">
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-2.5 bg-[#1A1A1A] rounded-full z-10"></div>
+                      <div className="w-full h-full scale-[0.45] origin-top">
+                         <LandingPhoneMockup scale={1} data={item} className="shadow-none border-none" />
+                      </div>
+                    </div>
+                    <div className="px-5 py-1.5 bg-gray-100 rounded-lg shadow-inner">
+                       <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                         {item.config.designCode || 'FLO085'}
+                       </span>
+                    </div>
+                  </div>
+
+                  {/* Info Panel - Matching Image UI */}
+                  <div className="flex-1 space-y-6 pt-2">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-[20px] font-bold text-[#2a2826] tracking-tight">
+                        {item.jenisMajlis.text} {item.namaPanggilan.text}
+                      </h3>
+                      <button className="text-gray-300 hover:text-gray-900 transition-colors p-1">
+                        <MoreVertical className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[14px] text-gray-400 font-medium">
+                        Created at: <span className="text-gray-900 ml-1">{new Date(item.tarikhMula).toLocaleDateString('en-GB')}</span>
+                      </p>
+                      <p className="text-[14px] text-gray-400 font-medium flex items-center gap-1.5">
+                        Expiry date: 6 months after payment 
+                        <HelpCircle className="w-4 h-4 text-amber-500 fill-amber-100 rounded-full" />
+                      </p>
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <p className="text-[13px] text-gray-400 font-bold uppercase tracking-widest">Your Invitation Link:</p>
+                      <div className="relative group/link w-full max-w-xl">
+                        <input 
+                          readOnly
+                          value={cardLink}
+                          className="w-full p-3 pr-12 border border-gray-300 rounded-xl text-[14px] text-gray-500 bg-white font-medium focus:outline-none focus:border-stone-400 transition-colors"
+                        />
+                        <button 
+                          onClick={() => {
+                            navigator.clipboard.writeText(`https://${cardLink}`);
+                          }}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Action Row - with matching icons */}
+                    <div className="flex flex-wrap items-center gap-8 pt-4 text-gray-700 text-[12px] font-bold uppercase tracking-[0.2em]">
+                      <button 
+                        onClick={() => { setEcardData(item); setView(ViewMode.EDITOR); }}
+                        className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
+                      >
+                        <Edit3 className="w-4 h-4" /> Edit
+                      </button>
+                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
+                        <ImageIcon className="w-4 h-4" /> Gallery
+                      </button>
+                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
+                        <Gift className="w-4 h-4" /> Gifts
+                      </button>
+                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
+                        <Mail className="w-4 h-4" /> RSVP
+                      </button>
+                      <button 
+                        onClick={() => { setEcardData(item); setIsPreview(true); }}
+                        className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
+                      >
+                        <Eye className="w-4 h-4" /> Preview
+                      </button>
+                    </div>
+
+                    <div className="pt-6">
+                      <button className="px-12 py-3.5 border border-stone-900 rounded-xl text-[13px] font-bold uppercase tracking-[0.25em] hover:bg-stone-900 hover:text-white active:scale-95 transition-all shadow-sm">
+                        Pay Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {idx < collections.length - 1 && (
+                  <div className="mt-16 w-full h-px bg-gray-100"></div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 
   const renderEditor = () => {
     if (isPreview) {
@@ -581,6 +733,7 @@ const App: React.FC = () => {
         {view === ViewMode.GALLERY && renderGallery()}
         {view === ViewMode.EDITOR && renderEditor()}
         {view === ViewMode.PRICING && renderPricing()}
+        {view === ViewMode.MY_ORDERS && renderMyOrders()}
       </main>
       <footer className="bg-white text-[#2a2826] py-24 px-6 md:px-12 border-t border-[#e8f3ed]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">

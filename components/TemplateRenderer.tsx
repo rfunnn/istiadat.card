@@ -54,11 +54,15 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
   const [showCover, setShowCover] = useState(true);
   const [guestCount, setGuestCount] = useState(1);
 
-  const getYouTubeEmbedUrl = (url: string) => {
-    if (!url) return '';
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const getYouTubeId = (url: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
-    const videoId = (match && match[2].length === 11) ? match[2] : null;
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const getYouTubeEmbedUrl = (url: string) => {
+    const videoId = getYouTubeId(url);
     if (!videoId) return '';
 
     let startSeconds = 0;
@@ -69,7 +73,13 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
       }
     }
 
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&start=${startSeconds}&controls=0&showinfo=0&rel=0&enablejsapi=1&origin=${window.location.origin}&widget_referrer=${window.location.origin}`;
+    // Parameters explained:
+    // autoplay=1: Start immediately when loaded (triggered by user button click)
+    // mute=0: Play with sound
+    // loop=1 + playlist=[ID]: Required to loop a single video
+    // controls=0: Hide YouTube UI
+    // enablejsapi=1: Allow potential interaction
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&start=${startSeconds}&controls=0&showinfo=0&rel=0&enablejsapi=1&origin=${window.location.origin}`;
   };
 
   useEffect(() => {
@@ -163,15 +173,17 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
         </div>
       )}
 
+      {/* Music Player Iframe - Logic fixed for background playback */}
       {isMusicPlaying && musicUrl && (
-        <div className="fixed -top-10 -left-10 opacity-0 pointer-events-none">
+        <div className="fixed -bottom-20 -left-20 pointer-events-none opacity-0 z-0">
           <iframe
-            width="1"
-            height="1"
+            width="200"
+            height="200"
             src={musicUrl}
-            title="Theme Song"
+            title="Background Music"
             frameBorder="0"
-            allow="autoplay; encrypted-media; fullscreen"
+            allow="autoplay; encrypted-media"
+            sandbox="allow-scripts allow-same-origin allow-presentation"
           ></iframe>
         </div>
       )}
@@ -307,7 +319,7 @@ const TemplateRenderer: React.FC<Props> = ({ data, onRSVPSubmit, previewMode = f
         )}
 
         <footer className="py-20 text-center opacity-30 text-[10px] tracking-widest uppercase pb-32">
-          <p>Powered by E-Card Studio Pro</p>
+          <p>Powered by istiadat.card Professional</p>
         </footer>
       </div>
 
