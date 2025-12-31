@@ -25,6 +25,7 @@ import {
   Mail,
   ChevronDown,
   Phone,
+  Volume2,
   VolumeX,
   MapPin,
   Gift,
@@ -138,13 +139,13 @@ const STATIC_LANDING_DATA: EcardData = {
 // Component that exactly mimics the requested image for the landing page
 const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1, data = STATIC_LANDING_DATA }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number, data?: EcardData }) => (
   <div 
-    className={`relative w-[105px] h-[230px] sm:w-[300px] sm:h-[650px] bg-white rounded-[1rem] sm:rounded-[3.5rem] p-1 sm:p-2.5 shadow-2xl border-[3px] sm:border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
+    className={`relative w-[110px] h-[240px] sm:w-[260px] sm:h-[560px] bg-white rounded-[1.2rem] sm:rounded-[3.5rem] p-1.5 sm:p-2.5 shadow-2xl border-[4px] sm:border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
     style={{ transform: `scale(${scale}) rotate(${tilted}deg)`, borderColor: borderColor, opacity: opacity }}
   >
     {/* Dynamic Island Notch */}
     <div className="absolute top-1 sm:top-4 left-1/2 -translate-x-1/2 w-8 h-2 sm:w-24 sm:h-7 bg-[#1A1A1A] rounded-full z-50"></div>
     
-    <div className="flex-1 bg-white rounded-[0.6rem] sm:rounded-[2.5rem] overflow-hidden relative pt-6 sm:pt-20 flex flex-col items-center">
+    <div className="flex-1 bg-white rounded-[1rem] sm:rounded-[2.5rem] overflow-hidden relative pt-8 sm:pt-16 flex flex-col items-center">
       {/* Background Subtle Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[25%] left-[65%] w-0.5 sm:w-1.5 h-0.5 sm:h-1.5 bg-stone-100 rounded-full"></div>
@@ -153,48 +154,48 @@ const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor
 
       <div className="relative z-10 flex flex-col items-center text-center px-1 sm:px-8 w-full">
         {/* Type of Event */}
-        <p className="text-[4px] sm:text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-4 sm:mb-16 leading-relaxed">
+        <p className="text-[4px] sm:text-[8px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-4 sm:mb-12 leading-relaxed">
           {data?.jenisMajlis?.text || 'WALIMATUL\nURUS'}
         </p>
 
         {/* Names */}
-        <div className="flex flex-col items-center gap-0.5 sm:gap-1 mb-6 sm:mb-20">
-          <h2 className="text-[14px] sm:text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+        <div className="flex flex-col items-center gap-0.5 sm:gap-1 mb-6 sm:mb-16">
+          <h2 className="text-[14px] sm:text-[42px] font-serif tracking-tight leading-none text-[#1a1c18]">
             {data?.namaPanggilan?.text.split('&')[0].trim() || 'Adam'}
           </h2>
-          <span className="text-[8px] sm:text-2xl font-serif italic text-stone-200 py-0.5 sm:py-1">&</span>
-          <h2 className="text-[14px] sm:text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+          <span className="text-[10px] sm:text-2xl font-serif italic text-stone-200 py-0.5 sm:py-1">&</span>
+          <h2 className="text-[14px] sm:text-[42px] font-serif tracking-tight leading-none text-[#1a1c18]">
             {data?.namaPanggilan?.text.split('&')[1]?.trim() || 'Hawa'}
           </h2>
         </div>
 
         {/* Date Section */}
-        <div className="space-y-0.5 sm:space-y-2 flex flex-col items-center mt-0.5 sm:mt-4">
+        <div className="space-y-1 sm:space-y-2 flex flex-col items-center mt-1 sm:mt-4">
           <div className="flex items-center gap-1 sm:gap-3 text-stone-400">
-            <Calendar className="w-1.5 sm:w-3.5 h-1.5 sm:h-3.5" />
+            <Calendar className="w-2 sm:w-3.5 h-2 sm:h-3.5" />
             <div className="flex flex-col items-start leading-none">
-               <span className="text-[5px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[0] || 'Selasa, 27 Januari'}</span>
-               <span className="text-[5px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[1] || '2026'}</span>
+               <span className="text-[6px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[0] || 'Selasa, 27 Januari'}</span>
+               <span className="text-[6px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[1] || '2026'}</span>
             </div>
           </div>
-          <p className="text-[4px] sm:text-[10px] italic text-stone-300 font-medium pt-0.5 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
+          <p className="text-[5px] sm:text-[10px] italic text-stone-300 font-medium pt-0.5 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
         </div>
 
         {/* Floating Indicator */}
-        <div className="mt-2 sm:mt-12 opacity-20">
-          <ChevronDown className="w-2 h-2 sm:w-5 sm:h-5" strokeWidth={1.5} />
+        <div className="mt-2 sm:mt-10 opacity-20">
+          <ChevronDown className="w-3 h-3 sm:w-5 sm:h-5" strokeWidth={1.5} />
         </div>
       </div>
 
       {/* Landing Style Navigation Pill */}
-      <div className="absolute bottom-1.5 sm:bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-5 sm:h-14 bg-stone-50/80 backdrop-blur-md rounded-md sm:rounded-2xl flex items-center justify-around px-1 sm:px-4 border border-white/40 shadow-sm">
+      <div className="absolute bottom-2 sm:bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-6 sm:h-12 bg-stone-50/80 backdrop-blur-md rounded-lg sm:rounded-2xl flex items-center justify-around px-1 sm:px-4 border border-white/40 shadow-sm">
         <Phone className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
         <VolumeX className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
         <MapPin className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
         <Gift className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
         <div className="relative">
           <Mail className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
-          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[2px] sm:text-[6px] font-black text-stone-300">RSVP</span>
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[3px] sm:text-[6px] font-black text-stone-300">RSVP</span>
         </div>
       </div>
     </div>
@@ -315,48 +316,48 @@ const App: React.FC = () => {
         <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
       
-      <section className="relative flex flex-col items-start px-6 md:px-12 lg:px-24 pt-4 md:pt-10 pb-12 md:pb-32">
-        <div className="relative z-20 w-full grid lg:grid-cols-12 gap-8 lg:gap-8 items-start max-w-7xl mx-auto">
-          <div className="lg:col-span-6 relative z-30 flex flex-col items-center lg:items-start space-y-4 md:space-y-6 text-center lg:text-left pt-6 lg:pt-12">
-            <div className="space-y-2 md:space-y-4 w-full flex flex-col items-center lg:items-start">
-              <div className="inline-flex items-center gap-4 px-6 md:px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm mb-2 md:mb-4">
-                <span className="text-stone-500 text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase">Exquisite Invitations</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#2a2826] tracking-tight leading-[1.1]">
-                Digital Invitation <br /> 
-                <span className="italic font-light text-[#6b7c72] leading-tight text-2xl md:text-4xl lg:text-5xl">For Various Occasions</span>
-              </h2>
-              <div className="h-20 md:h-36 lg:h-44 flex items-center overflow-hidden justify-center lg:justify-start w-full mt-1">
-                <span className="text-5xl md:text-7xl lg:text-8xl font-serif text-[#1a1c18] capitalize tracking-tighter opacity-0 leading-none animate-[fade-in_0.5s_ease-in_forwards]" key={occasionIndex}>
-                  {occasions[occasionIndex]}
-                </span>
-              </div>
+      <section className="relative flex flex-col lg:flex-row items-center px-6 md:px-12 lg:px-24 pt-2 md:pt-4 pb-8 md:pb-24 max-w-7xl mx-auto overflow-visible">
+        <div className="relative z-30 w-full lg:w-1/2 flex flex-col items-center lg:items-start space-y-4 md:space-y-6 text-center lg:text-left pt-4 lg:pt-8">
+          <div className="space-y-2 md:space-y-4 w-full flex flex-col items-center lg:items-start">
+            <div className="inline-flex items-center gap-4 px-6 md:px-8 py-3 bg-white border border-stone-100 rounded-full shadow-sm mb-1 md:mb-2">
+              <span className="text-stone-500 text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase">Exquisite Invitations</span>
             </div>
-            <p className="hidden md:block text-stone-500 text-lg md:text-xl leading-relaxed md:max-w-xl font-serif italic lg:pr-12">
-              Transform your most precious moments into a sophisticated digital experience. Elegant, interactive, and timeless.
-            </p>
-            <div className="hidden lg:flex w-full justify-start pt-4">
-              <button onClick={() => setView(ViewMode.GALLERY)} className="lg:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95 cursor-pointer">
-                Try Now For Free
-              </button>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#2a2826] tracking-tight leading-[1.1]">
+              Digital Invitation <br /> 
+              <span className="italic font-light text-[#6b7c72] leading-tight text-2xl md:text-4xl lg:text-5xl">For Various Occasions</span>
+            </h2>
+            <div className="h-16 md:h-24 lg:h-32 flex items-center overflow-hidden justify-center lg:justify-start w-full">
+              <span className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#1a1c18] capitalize tracking-tighter opacity-0 leading-none animate-[fade-in_0.5s_ease-in_forwards]" key={occasionIndex}>
+                {occasions[occasionIndex]}
+              </span>
             </div>
           </div>
-          <div className="lg:col-span-6 relative flex flex-col items-center justify-center z-10 pt-4 lg:pt-0">
-            <div className="relative w-full h-[240px] sm:h-[650px] lg:h-[750px] flex items-center justify-center">
-               <div className="absolute left-[5%] md:left-[5%] top-[10%]">
-                  <LandingPhoneMockup scale={0.8} tilted={-8} borderColor="#F0F0F0" opacity={0.3} className="blur-[0.5px]" />
-               </div>
-               <div className="relative z-10 right-[-10%] sm:right-[-20%] top-[0%]">
-                  <LandingPhoneMockup scale={1} tilted={2} borderColor="#1A1A1A" />
-               </div>
-            </div>
-            {/* Mobile View Primary Action Button after image */}
-            <div className="flex lg:hidden w-full max-w-[280px] justify-center mt-12">
-              <button onClick={() => setView(ViewMode.GALLERY)} className="w-full bg-[#1a1c18] text-white px-12 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
-                Try Now For Free
-              </button>
-            </div>
+          <p className="hidden md:block text-stone-500 text-lg md:text-xl leading-relaxed md:max-w-xl font-serif italic lg:pr-12">
+            Transform your most precious moments into a sophisticated digital experience. Elegant, interactive, and timeless.
+          </p>
+          <div className="hidden lg:flex w-full justify-start pt-2">
+            <button onClick={() => setView(ViewMode.GALLERY)} className="lg:w-auto bg-[#1a1c18] text-white px-16 py-5 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 hover:bg-[#2a2826] active:scale-95 cursor-pointer">
+              Try Now For Free
+            </button>
           </div>
+        </div>
+
+        <div className="relative w-full lg:w-1/2 flex items-center justify-center mt-4 lg:mt-0 min-h-[260px] sm:min-h-[580px]">
+          {/* Background blurred mockup - tilted */}
+          <div className="absolute left-[5%] sm:left-[10%] top-[10%] z-0">
+            <LandingPhoneMockup scale={0.8} tilted={-12} borderColor="#F0F0F0" opacity={0.2} className="blur-[1.5px]" />
+          </div>
+          {/* Foreground sharp mockup - centered but slightly offset */}
+          <div className="relative z-10 right-[-10%] sm:right-[-15%] top-0">
+            <LandingPhoneMockup scale={1.05} tilted={0} borderColor="#1A1A1A" />
+          </div>
+        </div>
+
+        {/* Mobile View Primary Action Button after image */}
+        <div className="flex lg:hidden w-full max-w-[280px] justify-center mt-4 mb-8 mx-auto">
+          <button onClick={() => setView(ViewMode.GALLERY)} className="w-full bg-[#1a1c18] text-white px-12 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
+            Try Now For Free
+          </button>
         </div>
       </section>
 
@@ -373,20 +374,20 @@ const App: React.FC = () => {
               </button>
             ))}
           </div>
-          <div className="relative inline-block">
+          <div className="relative inline-block overflow-visible">
             <div className="relative z-10 mx-auto">
                <LandingPhoneMockup scale={1} borderColor="#1A1A1A" />
             </div>
-            {/* Left Badge: Moved further out on mobile to avoid overlapping the phone mockup */}
-            <div className="absolute left-[-50px] sm:left-[-40px] md:left-[-160px] lg:left-[-180px] top-[25%] block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
+            {/* Left Badge: Fixed overlap by increasing negative offset on mobile */}
+            <div className="absolute left-[-115px] sm:left-[-120px] md:left-[-160px] lg:left-[-180px] top-[25%] block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-4 sm:px-8 py-3 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
                 <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full bg-[#6b7c72] animate-pulse"></div>
                 <p className="text-[#2a2826] font-bold text-[10px] sm:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
               </div>
             </div>
-            {/* Right Badge: Moved further out on mobile to avoid overlapping the phone mockup */}
-            <div className="absolute right-[-50px] sm:right-[-40px] md:right-[-160px] lg:right-[-180px] top-[65%] block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
+            {/* Right Badge: Fixed overlap by increasing negative offset on mobile */}
+            <div className="absolute right-[-115px] sm:right-[-120px] md:right-[-160px] lg:right-[-180px] top-[65%] block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-4 sm:px-8 py-3 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
                 <p className="text-[#2a2826] font-bold text-[10px] sm:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
                 <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full bg-[#d4af37] animate-pulse"></div>
               </div>
