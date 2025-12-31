@@ -135,58 +135,66 @@ const STATIC_LANDING_DATA: EcardData = {
   tarikhHijrah: '8 Syaaban 1447H',
 };
 
+// Component that exactly mimics the requested image for the landing page
 const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1, data = STATIC_LANDING_DATA }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number, data?: EcardData }) => (
   <div 
-    className={`relative w-[300px] h-[650px] bg-white rounded-[3.5rem] p-2.5 shadow-2xl border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
+    className={`relative w-[105px] h-[230px] sm:w-[300px] sm:h-[650px] bg-white rounded-[1rem] sm:rounded-[3.5rem] p-1 sm:p-2.5 shadow-2xl border-[3px] sm:border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
     style={{ transform: `scale(${scale}) rotate(${tilted}deg)`, borderColor: borderColor, opacity: opacity }}
   >
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#1A1A1A] rounded-full z-50"></div>
+    {/* Dynamic Island Notch */}
+    <div className="absolute top-1 sm:top-4 left-1/2 -translate-x-1/2 w-8 h-2 sm:w-24 sm:h-7 bg-[#1A1A1A] rounded-full z-50"></div>
     
-    <div className="flex-1 bg-white rounded-[2.5rem] overflow-hidden relative pt-20 flex flex-col items-center">
+    <div className="flex-1 bg-white rounded-[0.6rem] sm:rounded-[2.5rem] overflow-hidden relative pt-6 sm:pt-20 flex flex-col items-center">
+      {/* Background Subtle Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[25%] left-[65%] w-1.5 h-1.5 bg-stone-100 rounded-full"></div>
-        <div className="absolute top-[35%] left-[25%] w-1.5 h-1.5 bg-stone-50 rounded-full"></div>
+        <div className="absolute top-[25%] left-[65%] w-0.5 sm:w-1.5 h-0.5 sm:h-1.5 bg-stone-100 rounded-full"></div>
+        <div className="absolute top-[35%] left-[25%] w-0.5 sm:w-1.5 h-0.5 sm:h-1.5 bg-stone-50 rounded-full"></div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center text-center px-8 w-full">
-        <p className="text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-16 leading-relaxed">
+      <div className="relative z-10 flex flex-col items-center text-center px-1 sm:px-8 w-full">
+        {/* Type of Event */}
+        <p className="text-[4px] sm:text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-4 sm:mb-16 leading-relaxed">
           {data?.jenisMajlis?.text || 'WALIMATUL\nURUS'}
         </p>
 
-        <div className="flex flex-col items-center gap-1 mb-20">
-          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+        {/* Names */}
+        <div className="flex flex-col items-center gap-0.5 sm:gap-1 mb-6 sm:mb-20">
+          <h2 className="text-[14px] sm:text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
             {data?.namaPanggilan?.text.split('&')[0].trim() || 'Adam'}
           </h2>
-          <span className="text-2xl font-serif italic text-stone-200 py-1">&</span>
-          <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
+          <span className="text-[8px] sm:text-2xl font-serif italic text-stone-200 py-0.5 sm:py-1">&</span>
+          <h2 className="text-[14px] sm:text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
             {data?.namaPanggilan?.text.split('&')[1]?.trim() || 'Hawa'}
           </h2>
         </div>
 
-        <div className="space-y-2 flex flex-col items-center mt-4">
-          <div className="flex items-center gap-3 text-stone-400">
-            <Calendar className="w-3.5 h-3.5" />
+        {/* Date Section */}
+        <div className="space-y-0.5 sm:space-y-2 flex flex-col items-center mt-0.5 sm:mt-4">
+          <div className="flex items-center gap-1 sm:gap-3 text-stone-400">
+            <Calendar className="w-1.5 sm:w-3.5 h-1.5 sm:h-3.5" />
             <div className="flex flex-col items-start leading-none">
-               <span className="text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[0] || 'Selasa, 27 Januari'}</span>
-               <span className="text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[1] || '2026'}</span>
+               <span className="text-[5px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[0] || 'Selasa, 27 Januari'}</span>
+               <span className="text-[5px] sm:text-sm font-medium tracking-wide">{data?.hariTarikh?.text.split('\n')[1] || '2026'}</span>
             </div>
           </div>
-          <p className="text-[10px] italic text-stone-300 font-medium pt-1 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
+          <p className="text-[4px] sm:text-[10px] italic text-stone-300 font-medium pt-0.5 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
         </div>
 
-        <div className="mt-12 opacity-20">
-          <ChevronDown className="w-5 h-5" strokeWidth={1.5} />
+        {/* Floating Indicator */}
+        <div className="mt-2 sm:mt-12 opacity-20">
+          <ChevronDown className="w-2 h-2 sm:w-5 sm:h-5" strokeWidth={1.5} />
         </div>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-14 bg-stone-50/80 backdrop-blur-md rounded-2xl flex items-center justify-around px-4 border border-white/40 shadow-sm">
-        <Phone className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
-        <VolumeX className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
-        <MapPin className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
-        <Gift className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
+      {/* Landing Style Navigation Pill */}
+      <div className="absolute bottom-1.5 sm:bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-5 sm:h-14 bg-stone-50/80 backdrop-blur-md rounded-md sm:rounded-2xl flex items-center justify-around px-1 sm:px-4 border border-white/40 shadow-sm">
+        <Phone className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
+        <VolumeX className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
+        <MapPin className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
+        <Gift className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
         <div className="relative">
-          <Mail className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
-          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[6px] font-black text-stone-300">RSVP</span>
+          <Mail className="w-2 sm:w-4 h-2 sm:h-4 text-stone-400" strokeWidth={1.5} />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[2px] sm:text-[6px] font-black text-stone-300">RSVP</span>
         </div>
       </div>
     </div>
@@ -200,10 +208,9 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : INITIAL_STUDIO_DATA;
   });
   
-  // Real deployment URL logic
-  const DEPLOY_URL = window.location.hostname || "istiadat-card.vercel.app";
+  const BASE_DOMAIN = "istiadat-card.vercel.app";
 
-  const [collections, setCollections] = useState<EcardData[]>(() => {
+  const [orders, setOrders] = useState<EcardData[]>(() => {
     const saved = localStorage.getItem('ecard_collections_v1');
     return saved ? JSON.parse(saved) : [
       {
@@ -252,22 +259,22 @@ const App: React.FC = () => {
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     if (pathParts.length >= 1) {
       const orderId = pathParts[0];
-      const foundOrder = collections.find(c => c.id === orderId);
+      const foundOrder = orders.find(c => c.id === orderId);
       if (foundOrder) {
         setEcardData(foundOrder);
         setIsPreview(true);
         setIsPublicLink(true);
       }
     }
-  }, [collections]);
+  }, [orders]);
 
   useEffect(() => {
     localStorage.setItem('ecard_data_v4', JSON.stringify(ecardData));
   }, [ecardData]);
 
   useEffect(() => {
-    localStorage.setItem('ecard_collections_v1', JSON.stringify(collections));
-  }, [collections]);
+    localStorage.setItem('ecard_collections_v1', JSON.stringify(orders));
+  }, [orders]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -283,20 +290,21 @@ const App: React.FC = () => {
   }, [view]);
 
   const handleShare = () => {
+    const shareUrl = window.location.origin + window.location.pathname;
     if (navigator.share) {
       navigator.share({
         title: ecardData.namaPanggilan.text,
         text: `You are cordially invited to ${ecardData.jenisMajlis.text}`,
-        url: window.location.href,
+        url: shareUrl,
       }).catch(console.error);
     } else {
-      alert('Sharing link: ' + window.location.href);
+      alert('Sharing link: ' + shareUrl);
     }
   };
 
   const handleDeleteOrder = (id: string) => {
     if (confirm('Adakah anda pasti untuk memadam pesanan ini?')) {
-      setCollections(prev => prev.filter(c => c.id !== id));
+      setOrders(prev => prev.filter(c => c.id !== id));
     }
   };
 
@@ -307,7 +315,7 @@ const App: React.FC = () => {
         <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
       
-      <section className="relative flex items-start px-6 md:px-12 lg:px-24 pt-4 md:pt-10 pb-12 md:pb-32">
+      <section className="relative flex flex-col items-start px-6 md:px-12 lg:px-24 pt-4 md:pt-10 pb-12 md:pb-32">
         <div className="relative z-20 w-full grid lg:grid-cols-12 gap-8 lg:gap-8 items-start max-w-7xl mx-auto">
           <div className="lg:col-span-6 relative z-30 flex flex-col items-center lg:items-start space-y-4 md:space-y-6 text-center lg:text-left pt-6 lg:pt-12">
             <div className="space-y-2 md:space-y-4 w-full flex flex-col items-center lg:items-start">
@@ -334,13 +342,19 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="lg:col-span-6 relative flex flex-col items-center justify-center z-10 pt-4 lg:pt-0">
-            <div className="relative w-full h-[450px] md:h-[650px] lg:h-[750px] flex items-center justify-center">
-               <div className="absolute left-[0%] md:left-[5%] top-[10%]">
-                  <LandingPhoneMockup scale={0.85} tilted={-8} borderColor="#F0F0F0" opacity={0.3} className="blur-[1px]" />
+            <div className="relative w-full h-[240px] sm:h-[650px] lg:h-[750px] flex items-center justify-center">
+               <div className="absolute left-[5%] md:left-[5%] top-[10%]">
+                  <LandingPhoneMockup scale={0.8} tilted={-8} borderColor="#F0F0F0" opacity={0.3} className="blur-[0.5px]" />
                </div>
-               <div className="relative z-10 right-[-15%] md:right-[-20%] top-[0%]">
+               <div className="relative z-10 right-[-10%] sm:right-[-20%] top-[0%]">
                   <LandingPhoneMockup scale={1} tilted={2} borderColor="#1A1A1A" />
                </div>
+            </div>
+            {/* Mobile View Primary Action Button after image */}
+            <div className="flex lg:hidden w-full max-w-[280px] justify-center mt-12">
+              <button onClick={() => setView(ViewMode.GALLERY)} className="w-full bg-[#1a1c18] text-white px-12 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
+                Try Now For Free
+              </button>
             </div>
           </div>
         </div>
@@ -363,16 +377,18 @@ const App: React.FC = () => {
             <div className="relative z-10 mx-auto">
                <LandingPhoneMockup scale={1} borderColor="#1A1A1A" />
             </div>
-            <div className="absolute left-[-80px] md:left-[-160px] lg:left-[-180px] top-[25%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
-                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#6b7c72] animate-pulse"></div>
-                <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
+            {/* Left Badge: Moved further out on mobile to avoid overlapping the phone mockup */}
+            <div className="absolute left-[-50px] sm:left-[-40px] md:left-[-160px] lg:left-[-180px] top-[25%] block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
+                <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full bg-[#6b7c72] animate-pulse"></div>
+                <p className="text-[#2a2826] font-bold text-[10px] sm:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
               </div>
             </div>
-            <div className="absolute right-[-80px] md:right-[-160px] lg:right-[-180px] top-[65%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
-              <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
-                <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
-                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#d4af37] animate-pulse"></div>
+            {/* Right Badge: Moved further out on mobile to avoid overlapping the phone mockup */}
+            <div className="absolute right-[-50px] sm:right-[-40px] md:right-[-160px] lg:right-[-180px] top-[65%] block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
+              <div className="bg-white/95 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-2 sm:gap-4">
+                <p className="text-[#2a2826] font-bold text-[10px] sm:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
+                <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full bg-[#d4af37] animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -564,14 +580,14 @@ const App: React.FC = () => {
         </div>
 
         <div className="space-y-16">
-          {collections.length === 0 ? (
+          {orders.length === 0 ? (
             <div className="text-center py-20 bg-stone-50 rounded-[3rem] border border-dashed border-stone-200">
                <p className="text-stone-400 font-medium italic">No orders found. Create your first card!</p>
             </div>
           ) : (
-            collections.map((item, idx) => {
+            orders.map((item, idx) => {
               const slug = item.namaPanggilan.text.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
-              const cardLink = `${DEPLOY_URL}/${item.id}/${slug}`;
+              const cardLink = `${BASE_DOMAIN}/${item.id}/${slug}`;
               return (
                <div key={item.id} className="relative group">
                  <div className="grid md:grid-cols-[160px_1fr] gap-8 md:gap-16 items-start">
@@ -594,9 +610,11 @@ const App: React.FC = () => {
                        <h3 className="text-[20px] font-bold text-[#2a2826] tracking-tight">
                          {item.jenisMajlis.text} {item.namaPanggilan.text}
                        </h3>
-                       <button className="text-gray-300 hover:text-gray-900 transition-colors p-1">
-                         <MoreVertical className="w-5 h-5" />
-                       </button>
+                       <div className="relative group/more">
+                        <button className="text-gray-300 hover:text-gray-900 transition-colors p-1">
+                          <MoreVertical className="w-5 h-5" />
+                        </button>
+                       </div>
                      </div>
  
                      <div className="space-y-2">
@@ -658,7 +676,7 @@ const App: React.FC = () => {
                    </div>
                  </div>
  
-                 {idx < collections.length - 1 && (
+                 {idx < orders.length - 1 && (
                    <div className="mt-16 w-full h-px bg-gray-100"></div>
                  )}
                </div>
@@ -722,10 +740,13 @@ const App: React.FC = () => {
   const renderTemplateOverlay = () => (
     <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center z-[200]">
       <div className="w-full h-full max-w-md bg-white overflow-hidden relative">
-        {/* Only show back button if NOT a direct public public link */}
+        {/* Only show back button if NOT a direct public link */}
         {!isPublicLink && (
           <button
-            onClick={() => setIsPreview(false)}
+            onClick={() => {
+               setIsPreview(false);
+               window.scrollTo(0, 0);
+            }}
             className="absolute top-4 left-4 z-50 bg-black/40 text-white p-2 rounded-full backdrop-blur-md hover:bg-black/60 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
