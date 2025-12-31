@@ -37,7 +37,8 @@ import {
   Copy,
   Plus,
   HelpCircle,
-  ClipboardList
+  ClipboardList,
+  Trash2
 } from 'lucide-react';
 
 const INITIAL_STUDIO_DATA: EcardData = {
@@ -134,29 +135,24 @@ const STATIC_LANDING_DATA: EcardData = {
   tarikhHijrah: '8 Syaaban 1447H',
 };
 
-// Component that exactly mimics the requested image for the landing page
 const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor = "#1A1A1A", opacity = 1, data = STATIC_LANDING_DATA }: { tilted?: number, className?: string, scale?: number, borderColor?: string, opacity?: number, data?: EcardData }) => (
   <div 
     className={`relative w-[300px] h-[650px] bg-white rounded-[3.5rem] p-2.5 shadow-2xl border-[12px] flex flex-col overflow-hidden transition-all duration-700 ${className}`}
     style={{ transform: `scale(${scale}) rotate(${tilted}deg)`, borderColor: borderColor, opacity: opacity }}
   >
-    {/* Dynamic Island Notch */}
     <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#1A1A1A] rounded-full z-50"></div>
     
     <div className="flex-1 bg-white rounded-[2.5rem] overflow-hidden relative pt-20 flex flex-col items-center">
-      {/* Background Subtle Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[25%] left-[65%] w-1.5 h-1.5 bg-stone-100 rounded-full"></div>
         <div className="absolute top-[35%] left-[25%] w-1.5 h-1.5 bg-stone-50 rounded-full"></div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center text-center px-8 w-full">
-        {/* Type of Event */}
         <p className="text-[10px] font-bold text-stone-400 tracking-[0.4em] uppercase mb-16 leading-relaxed">
           {data?.jenisMajlis?.text || 'WALIMATUL\nURUS'}
         </p>
 
-        {/* Names */}
         <div className="flex flex-col items-center gap-1 mb-20">
           <h2 className="text-[52px] font-serif tracking-tight leading-none text-[#1a1c18]">
             {data?.namaPanggilan?.text.split('&')[0].trim() || 'Adam'}
@@ -167,7 +163,6 @@ const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor
           </h2>
         </div>
 
-        {/* Date Section */}
         <div className="space-y-2 flex flex-col items-center mt-4">
           <div className="flex items-center gap-3 text-stone-400">
             <Calendar className="w-3.5 h-3.5" />
@@ -179,13 +174,11 @@ const LandingPhoneMockup = ({ tilted = 0, className = "", scale = 1, borderColor
           <p className="text-[10px] italic text-stone-300 font-medium pt-1 tracking-wider">{data?.tarikhHijrah || '8 Syaaban 1447H'}</p>
         </div>
 
-        {/* Floating Indicator */}
         <div className="mt-12 opacity-20">
           <ChevronDown className="w-5 h-5" strokeWidth={1.5} />
         </div>
       </div>
 
-      {/* Landing Style Navigation Pill */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] h-14 bg-stone-50/80 backdrop-blur-md rounded-2xl flex items-center justify-around px-4 border border-white/40 shadow-sm">
         <Phone className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
         <VolumeX className="w-4 h-4 text-stone-400" strokeWidth={1.5} />
@@ -207,10 +200,9 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : INITIAL_STUDIO_DATA;
   });
   
-  // Deployment URL
-  const DEPLOY_URL = "istiadat-card.vercel.app";
+  // Real deployment URL logic
+  const DEPLOY_URL = window.location.hostname || "istiadat-card.vercel.app";
 
-  // Simulated collection of saved cards
   const [collections, setCollections] = useState<EcardData[]>(() => {
     const saved = localStorage.getItem('ecard_collections_v1');
     return saved ? JSON.parse(saved) : [
@@ -234,6 +226,7 @@ const App: React.FC = () => {
 
   const [isEditorOpen, setIsEditorOpen] = useState(true);
   const [isPreview, setIsPreview] = useState(false);
+  const [isPublicLink, setIsPublicLink] = useState(false);
   const [occasionIndex, setOccasionIndex] = useState(0);
   const [galleryFilter, setGalleryFilter] = useState('All');
   const [likedTemplates, setLikedTemplates] = useState<Set<string>>(new Set());
@@ -253,6 +246,20 @@ const App: React.FC = () => {
     { label: 'Wishlist', left: 'Registry', right: 'Contribute' },
     { label: 'Money Gift', left: 'QR Pay', right: 'Bank Info' }
   ];
+
+  // Logic to handle path-based routing for invitation links (e.g., /40264/slug)
+  useEffect(() => {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (pathParts.length >= 1) {
+      const orderId = pathParts[0];
+      const foundOrder = collections.find(c => c.id === orderId);
+      if (foundOrder) {
+        setEcardData(foundOrder);
+        setIsPreview(true);
+        setIsPublicLink(true);
+      }
+    }
+  }, [collections]);
 
   useEffect(() => {
     localStorage.setItem('ecard_data_v4', JSON.stringify(ecardData));
@@ -287,6 +294,12 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDeleteOrder = (id: string) => {
+    if (confirm('Adakah anda pasti untuk memadam pesanan ini?')) {
+      setCollections(prev => prev.filter(c => c.id !== id));
+    }
+  };
+
   const renderLanding = () => (
     <div className="min-h-screen bg-[#fdfcfb] text-[#2a2826] overflow-x-hidden">
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-60">
@@ -294,7 +307,6 @@ const App: React.FC = () => {
         <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-[#f4f1ed] rounded-full blur-[120px]"></div>
       </div>
       
-      {/* Hero Section */}
       <section className="relative flex items-start px-6 md:px-12 lg:px-24 pt-4 md:pt-10 pb-12 md:pb-32">
         <div className="relative z-20 w-full grid lg:grid-cols-12 gap-8 lg:gap-8 items-start max-w-7xl mx-auto">
           <div className="lg:col-span-6 relative z-30 flex flex-col items-center lg:items-start space-y-4 md:space-y-6 text-center lg:text-left pt-6 lg:pt-12">
@@ -323,11 +335,9 @@ const App: React.FC = () => {
           </div>
           <div className="lg:col-span-6 relative flex flex-col items-center justify-center z-10 pt-4 lg:pt-0">
             <div className="relative w-full h-[450px] md:h-[650px] lg:h-[750px] flex items-center justify-center">
-               {/* Background phone exactly following image reference */}
                <div className="absolute left-[0%] md:left-[5%] top-[10%]">
                   <LandingPhoneMockup scale={0.85} tilted={-8} borderColor="#F0F0F0" opacity={0.3} className="blur-[1px]" />
                </div>
-               {/* Main phone exactly following image reference */}
                <div className="relative z-10 right-[-15%] md:right-[-20%] top-[0%]">
                   <LandingPhoneMockup scale={1} tilted={2} borderColor="#1A1A1A" />
                </div>
@@ -336,7 +346,6 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="relative py-24 md:py-32 bg-[#f4f9f7] overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
           <div className="inline-block mb-8 px-10 py-3 bg-white border border-stone-100 rounded-full shadow-sm">
@@ -354,14 +363,12 @@ const App: React.FC = () => {
             <div className="relative z-10 mx-auto">
                <LandingPhoneMockup scale={1} borderColor="#1A1A1A" />
             </div>
-            {/* Left label */}
             <div className="absolute left-[-80px] md:left-[-160px] lg:left-[-180px] top-[25%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-left-8" key={`left-${activeFeatureIndex}`}>
               <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
                 <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-[#6b7c72] animate-pulse"></div>
                 <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].left}</p>
               </div>
             </div>
-            {/* Right label */}
             <div className="absolute right-[-80px] md:right-[-160px] lg:right-[-180px] top-[65%] hidden sm:block transition-all duration-500 animate-in fade-in slide-in-from-right-8" key={`right-${activeFeatureIndex}`}>
               <div className="bg-white/95 backdrop-blur-xl px-6 md:px-8 py-3 md:py-5 rounded-2xl md:rounded-[2rem] shadow-2xl border border-stone-100 flex items-center gap-3 md:gap-4">
                 <p className="text-[#2a2826] font-bold text-xs md:text-lg whitespace-nowrap tracking-tight">{features[activeFeatureIndex].right}</p>
@@ -557,127 +564,113 @@ const App: React.FC = () => {
         </div>
 
         <div className="space-y-16">
-          {collections.map((item, idx) => {
-             const cardLink = `${DEPLOY_URL}/${item.id}/${item.namaPanggilan.text.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-')}`;
-             return (
-              <div key={item.id} className="relative group">
-                <div className="grid md:grid-cols-[160px_1fr] gap-8 md:gap-16 items-start">
-                  {/* Mockup Display - Exactly as requested */}
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="relative w-[140px] h-[240px] bg-white rounded-[2.2rem] border-[8px] border-[#1A1A1A] overflow-hidden shadow-2xl">
-                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-2.5 bg-[#1A1A1A] rounded-full z-10"></div>
-                      <div className="w-full h-full scale-[0.45] origin-top">
-                         <LandingPhoneMockup scale={1} data={item} className="shadow-none border-none" />
-                      </div>
-                    </div>
-                    <div className="px-5 py-1.5 bg-gray-100 rounded-lg shadow-inner">
-                       <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                         {item.config.designCode || 'FLO085'}
-                       </span>
-                    </div>
-                  </div>
-
-                  {/* Info Panel - Matching Image UI */}
-                  <div className="flex-1 space-y-6 pt-2">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-[20px] font-bold text-[#2a2826] tracking-tight">
-                        {item.jenisMajlis.text} {item.namaPanggilan.text}
-                      </h3>
-                      <button className="text-gray-300 hover:text-gray-900 transition-colors p-1">
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      <p className="text-[14px] text-gray-400 font-medium">
-                        Created at: <span className="text-gray-900 ml-1">{new Date(item.tarikhMula).toLocaleDateString('en-GB')}</span>
-                      </p>
-                      <p className="text-[14px] text-gray-400 font-medium flex items-center gap-1.5">
-                        Expiry date: 6 months after payment 
-                        <HelpCircle className="w-4 h-4 text-amber-500 fill-amber-100 rounded-full" />
-                      </p>
-                    </div>
-
-                    <div className="space-y-2 pt-2">
-                      <p className="text-[13px] text-gray-400 font-bold uppercase tracking-widest">Your Invitation Link:</p>
-                      <div className="relative group/link w-full max-w-xl">
-                        <input 
-                          readOnly
-                          value={cardLink}
-                          className="w-full p-3 pr-12 border border-gray-300 rounded-xl text-[14px] text-gray-500 bg-white font-medium focus:outline-none focus:border-stone-400 transition-colors"
-                        />
-                        <button 
-                          onClick={() => {
-                            navigator.clipboard.writeText(`https://${cardLink}`);
-                          }}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Action Row - with matching icons */}
-                    <div className="flex flex-wrap items-center gap-8 pt-4 text-gray-700 text-[12px] font-bold uppercase tracking-[0.2em]">
-                      <button 
-                        onClick={() => { setEcardData(item); setView(ViewMode.EDITOR); }}
-                        className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
-                      >
-                        <Edit3 className="w-4 h-4" /> Edit
-                      </button>
-                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
-                        <ImageIcon className="w-4 h-4" /> Gallery
-                      </button>
-                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
-                        <Gift className="w-4 h-4" /> Gifts
-                      </button>
-                      <button className="flex items-center gap-2.5 hover:text-stone-900 transition-colors">
-                        <Mail className="w-4 h-4" /> RSVP
-                      </button>
-                      <button 
-                        onClick={() => { setEcardData(item); setIsPreview(true); }}
-                        className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
-                      >
-                        <Eye className="w-4 h-4" /> Preview
-                      </button>
-                    </div>
-
-                    <div className="pt-6">
-                      <button className="px-12 py-3.5 border border-stone-900 rounded-xl text-[13px] font-bold uppercase tracking-[0.25em] hover:bg-stone-900 hover:text-white active:scale-95 transition-all shadow-sm">
-                        Pay Now
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {idx < collections.length - 1 && (
-                  <div className="mt-16 w-full h-px bg-gray-100"></div>
-                )}
-              </div>
-            );
-          })}
+          {collections.length === 0 ? (
+            <div className="text-center py-20 bg-stone-50 rounded-[3rem] border border-dashed border-stone-200">
+               <p className="text-stone-400 font-medium italic">No orders found. Create your first card!</p>
+            </div>
+          ) : (
+            collections.map((item, idx) => {
+              const slug = item.namaPanggilan.text.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
+              const cardLink = `${DEPLOY_URL}/${item.id}/${slug}`;
+              return (
+               <div key={item.id} className="relative group">
+                 <div className="grid md:grid-cols-[160px_1fr] gap-8 md:gap-16 items-start">
+                   <div className="flex flex-col items-center gap-4">
+                     <div className="relative w-[140px] h-[240px] bg-white rounded-[2.2rem] border-[8px] border-[#1A1A1A] overflow-hidden shadow-2xl">
+                       <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-2.5 bg-[#1A1A1A] rounded-full z-10"></div>
+                       <div className="w-full h-full scale-[0.45] origin-top">
+                          <LandingPhoneMockup scale={1} data={item} className="shadow-none border-none" />
+                       </div>
+                     </div>
+                     <div className="px-5 py-1.5 bg-gray-100 rounded-lg shadow-inner">
+                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                          {item.config.designCode || 'FLO085'}
+                        </span>
+                     </div>
+                   </div>
+ 
+                   <div className="flex-1 space-y-6 pt-2">
+                     <div className="flex justify-between items-start">
+                       <h3 className="text-[20px] font-bold text-[#2a2826] tracking-tight">
+                         {item.jenisMajlis.text} {item.namaPanggilan.text}
+                       </h3>
+                       <button className="text-gray-300 hover:text-gray-900 transition-colors p-1">
+                         <MoreVertical className="w-5 h-5" />
+                       </button>
+                     </div>
+ 
+                     <div className="space-y-2">
+                       <p className="text-[14px] text-gray-400 font-medium">
+                         Created at: <span className="text-gray-900 ml-1">{new Date(item.tarikhMula).toLocaleDateString('en-GB')}</span>
+                       </p>
+                       <p className="text-[14px] text-gray-400 font-medium flex items-center gap-1.5">
+                         Expiry date: 6 months after payment 
+                         <HelpCircle className="w-4 h-4 text-amber-500 fill-amber-100 rounded-full" />
+                       </p>
+                     </div>
+ 
+                     <div className="space-y-2 pt-2">
+                       <p className="text-[13px] text-gray-400 font-bold uppercase tracking-widest">Your Invitation Link:</p>
+                       <div className="relative group/link w-full max-w-xl">
+                         <input 
+                           readOnly
+                           value={cardLink}
+                           className="w-full p-3 pr-12 border border-gray-300 rounded-xl text-[14px] text-gray-500 bg-white font-medium focus:outline-none focus:border-stone-400 transition-colors"
+                         />
+                         <button 
+                           onClick={() => {
+                             navigator.clipboard.writeText(`https://${cardLink}`);
+                             alert('Pautan disalin ke papan keratan!');
+                           }}
+                           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors"
+                         >
+                           <Copy className="w-4 h-4" />
+                         </button>
+                       </div>
+                     </div>
+ 
+                     <div className="flex flex-wrap items-center gap-8 pt-4 text-gray-700 text-[12px] font-bold uppercase tracking-[0.2em]">
+                       <button 
+                         onClick={() => { setEcardData(item); setView(ViewMode.EDITOR); }}
+                         className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
+                       >
+                         <Edit3 className="w-4 h-4" /> Edit
+                       </button>
+                       <button 
+                         onClick={() => { setEcardData(item); setIsPreview(true); }}
+                         className="flex items-center gap-2.5 hover:text-stone-900 transition-colors"
+                       >
+                         <Eye className="w-4 h-4" /> Preview
+                       </button>
+                       <button 
+                         onClick={() => handleDeleteOrder(item.id)}
+                         className="flex items-center gap-2.5 text-rose-500 hover:text-rose-700 transition-colors"
+                       >
+                         <Trash2 className="w-4 h-4" /> Delete
+                       </button>
+                     </div>
+ 
+                     <div className="pt-6">
+                       <button className="px-12 py-3.5 border border-stone-900 rounded-xl text-[13px] font-bold uppercase tracking-[0.25em] hover:bg-stone-900 hover:text-white active:scale-95 transition-all shadow-sm">
+                         Pay Now
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+ 
+                 {idx < collections.length - 1 && (
+                   <div className="mt-16 w-full h-px bg-gray-100"></div>
+                 )}
+               </div>
+             );
+           })
+          )}
         </div>
       </div>
     </div>
   );
 
   const renderEditor = () => {
-    if (isPreview) {
-      return (
-        <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center z-[200]">
-          <div className="w-full h-full max-w-md bg-white overflow-hidden relative">
-            <button
-              onClick={() => setIsPreview(false)}
-              className="absolute top-4 left-4 z-50 bg-black/40 text-white p-2 rounded-full backdrop-blur-md"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <TemplateRenderer data={ecardData} onRSVPSubmit={() => {}} />
-          </div>
-        </div>
-      );
-    }
-
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex flex-col md:flex-row overflow-hidden h-[calc(100vh-80px)]">
         <div className={`${isEditorOpen ? 'w-full md:w-[450px]' : 'hidden'} h-full z-40 transition-all duration-300 ease-in-out`}>
@@ -725,28 +718,58 @@ const App: React.FC = () => {
     );
   };
 
+  // Full-screen Template Overlay used for both direct URL and internal Previews
+  const renderTemplateOverlay = () => (
+    <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center z-[200]">
+      <div className="w-full h-full max-w-md bg-white overflow-hidden relative">
+        {/* Only show back button if NOT a direct public public link */}
+        {!isPublicLink && (
+          <button
+            onClick={() => setIsPreview(false)}
+            className="absolute top-4 left-4 z-50 bg-black/40 text-white p-2 rounded-full backdrop-blur-md hover:bg-black/60 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        )}
+        <TemplateRenderer data={ecardData} onRSVPSubmit={() => {}} />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#fdfcfb]">
-      <Header setView={setView} currentView={view} />
+      {/* Show header only if not in direct invitation view */}
+      {!isPublicLink && !isPreview && <Header setView={setView} currentView={view} />}
+      
       <main>
-        {view === ViewMode.LANDING && renderLanding()}
-        {view === ViewMode.GALLERY && renderGallery()}
-        {view === ViewMode.EDITOR && renderEditor()}
-        {view === ViewMode.PRICING && renderPricing()}
-        {view === ViewMode.MY_ORDERS && renderMyOrders()}
+        {isPreview && renderTemplateOverlay()}
+        
+        {/* Regular views are shown only if preview overlay is inactive */}
+        {!isPreview && (
+          <>
+            {view === ViewMode.LANDING && renderLanding()}
+            {view === ViewMode.GALLERY && renderGallery()}
+            {view === ViewMode.EDITOR && renderEditor()}
+            {view === ViewMode.PRICING && renderPricing()}
+            {view === ViewMode.MY_ORDERS && renderMyOrders()}
+          </>
+        )}
       </main>
-      <footer className="bg-white text-[#2a2826] py-24 px-6 md:px-12 border-t border-[#e8f3ed]">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-[#1a1c18] rounded-2xl flex items-center justify-center text-white font-serif text-2xl shadow-lg">I</div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#1a1c18]">istiadat<span className="text-[#6b7c72] font-light">.card</span></h1>
+
+      {!isPublicLink && !isPreview && (
+        <footer className="bg-white text-[#2a2826] py-24 px-6 md:px-12 border-t border-[#e8f3ed]">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#1a1c18] rounded-2xl flex items-center justify-center text-white font-serif text-2xl shadow-lg">I</div>
+              <h1 className="text-2xl font-bold tracking-tight text-[#1a1c18]">istiadat<span className="text-[#6b7c72] font-light">.card</span></h1>
+            </div>
+            <div className="flex gap-12 text-[11px] font-bold uppercase tracking-[0.4em] text-[#6b7c72]">
+              <button onClick={() => setView(ViewMode.GALLERY)} className="hover:text-stone-900 transition-colors">Templates</button>
+              <button onClick={() => setView(ViewMode.PRICING)} className="hover:text-stone-900 transition-colors">Pricing</button>
+            </div>
           </div>
-          <div className="flex gap-12 text-[11px] font-bold uppercase tracking-[0.4em] text-[#6b7c72]">
-            <button onClick={() => setView(ViewMode.GALLERY)} className="hover:text-stone-900 transition-colors">Templates</button>
-            <button onClick={() => setView(ViewMode.PRICING)} className="hover:text-stone-900 transition-colors">Pricing</button>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };
